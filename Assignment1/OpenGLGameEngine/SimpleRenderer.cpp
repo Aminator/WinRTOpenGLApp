@@ -6,6 +6,8 @@ namespace OpenGLGameEngine
 {
     SimpleRenderer::SimpleRenderer()
     {
+        glEnable(GL_DEPTH_TEST);
+
 #if IS_UWP
         using namespace winrt::Windows::Foundation;
         using namespace winrt::Windows::System;
@@ -162,13 +164,13 @@ namespace OpenGLGameEngine
             0, 1, 2
         };
 
-        std::wstring vertexShaderSource = co_await ShaderProgram::LoadShaderAsync(L"ms-appx:///VertexShader.glsl");
-        std::wstring fragmentShaderSource = co_await ShaderProgram::LoadShaderAsync(L"ms-appx:///FragmentShader.glsl");
+        std::wstring vertexShaderSource = co_await ShaderProgram::LoadShaderAsync(L"ms-appx:///Assets/VertexShader.glsl");
+        std::wstring fragmentShaderSource = co_await ShaderProgram::LoadShaderAsync(L"ms-appx:///Assets/FragmentShader.glsl");
 
-        m_texture0 = co_await Texture::LoadAsync(L"ms-appx:///Container.jpg");
+        m_texture0 = co_await Texture::LoadAsync(L"ms-appx:///Assets/Container.jpg");
         m_texture0->Unbind();
 
-        m_texture1 = co_await Texture::LoadAsync(L"ms-appx:///AwesomeFace.png");
+        m_texture1 = co_await Texture::LoadAsync(L"ms-appx:///Assets/AwesomeFace.png");
         m_texture1->Unbind();
 
         m_program = std::make_unique<ShaderProgram>(vertexShaderSource, fragmentShaderSource);
@@ -189,8 +191,6 @@ namespace OpenGLGameEngine
 
         (*m_program)[L"texture0"].SetValue(0);
         (*m_program)[L"texture1"].SetValue(1);
-
-        glEnable(GL_DEPTH_TEST);
     }
 
     void SimpleRenderer::Draw(float deltaTime)

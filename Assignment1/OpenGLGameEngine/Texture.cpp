@@ -27,17 +27,18 @@ namespace OpenGLGameEngine
 
         StorageFile file = co_await StorageFile::GetFileFromApplicationUriAsync(Uri(path));
 
+        BitmapTransform transform;
+        transform.Flip(BitmapFlip::Vertical);
+
         BitmapDecoder decoder = co_await BitmapDecoder::CreateAsync(co_await file.OpenReadAsync());
-        PixelDataProvider pixelDataProvider = co_await decoder.GetPixelDataAsync();
+        PixelDataProvider pixelDataProvider = co_await decoder.GetPixelDataAsync(
+            decoder.BitmapPixelFormat(),
+            decoder.BitmapAlphaMode(),
+            transform,
+            ExifOrientationMode::RespectExifOrientation,
+            ColorManagementMode::DoNotColorManage);
 
         auto imageBuffer = pixelDataProvider.DetachPixelData();
-
-        unsigned char* data = new unsigned char[imageBuffer.size()];
-
-        for (int i = 0; i < imageBuffer.size(); i++)
-        {
-            data[i] = imageBuffer[i];
-        }
 
         GLenum pixelFormat;
 
@@ -53,9 +54,7 @@ namespace OpenGLGameEngine
                 throw std::exception("This format is not supported.");
         }
 
-        auto texture = std::make_shared<Texture>(data, decoder.PixelWidth(), decoder.PixelHeight(), pixelFormat);
-
-        delete[] data;
+        auto texture = std::make_shared<Texture>(imageBuffer.data(), decoder.OrientedPixelWidth(), decoder.OrientedPixelHeight(), pixelFormat);
 
         return texture;
 #endif
