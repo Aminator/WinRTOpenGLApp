@@ -55,13 +55,13 @@ namespace winrt::OpenGLGameEngineWinRT::implementation
 
             float deltaTime = duration.count();
 
-            std::wstringstream timeString;
-            timeString << 1.0f / deltaTime << std::endl;
+            //std::wstringstream timeString;
+            //timeString << 1.0f / deltaTime << std::endl;
 
-            OutputDebugString(timeString.str().c_str());
+            //OutputDebugString(timeString.str().c_str());
 
-            m_cubeRenderer->Draw(deltaTime);
             m_cubeRenderer->Update(deltaTime);
+            m_cubeRenderer->Draw(deltaTime);
 
             eglSwapInterval(m_display, 1);
 

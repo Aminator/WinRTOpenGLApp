@@ -1,13 +1,14 @@
 ﻿attribute vec3 vertexPos;
-attribute vec4 vertexColor;
+attribute vec2 texCoord;
 
-uniform float time;
+varying vec2 vTexCoord;
 
-varying vec4 vColor;
+uniform mat4 worldMatrix;
+uniform mat4 viewMatrix;
+uniform mat4 projectionMatrix;
 
 void main()
 {
-    gl_Position = vec4(vertexPos, 1.0);
-    vColor = vec4(sin(time), vertexColor.y, vertexColor.z, 1.0);
-    vColor = vertexColor;
+    gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4(vertexPos, 1.0);
+	vTexCoord = texCoord;
 }

@@ -21,6 +21,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)ShaderProgram.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ShaderProgramParameter.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SimpleRenderer.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)GLObject.h" />
@@ -32,6 +33,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)ShaderProgramParameter.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SimpleRenderer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)StringHelper.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Texture.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)TypeHelper.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)VertexArray.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)VertexBuffer.h" />

@@ -19,4 +19,10 @@ namespace OpenGLGameEngine
         glUseProgram(m_rendererId);
         glUniform1i(m_location, param);
     }
+
+    void ShaderProgramParameter::SetValue(const glm::mat4& param) const
+    {
+        glUseProgram(m_rendererId);
+        glUniformMatrix4fv(m_location, 1, false, glm::value_ptr(param));
+    }
 }

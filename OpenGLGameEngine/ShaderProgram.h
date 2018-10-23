@@ -22,7 +22,7 @@ namespace OpenGLGameEngine
 
         ShaderProgramParameter operator[](const std::wstring& name);
 
-        static concurrency::task<std::wstring> LoadShaderAsync(const std::wstring& path);
+        static concurrency::task<std::wstring> LoadShaderAsync(std::wstring path);
 
         void Bind() const override;
         void Unbind() const override;

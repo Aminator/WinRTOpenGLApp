@@ -15,12 +15,12 @@ namespace OpenGLGameEngine
         static void ClearColor(float r, float g, float b, float a);
 
         template<typename T, typename S>
-        static void Draw(const VertexArray<T, S>& vertexArray, const ShaderProgram& program, GLenum primitiveType)
+        static void Draw(const VertexArray<T, S>& vertexArray, const ShaderProgram& program, GLenum primitiveType, int count)
         {
             vertexArray.Bind();
             program.Bind();
 
-            glDrawArrays(primitiveType, 0, vertexArray.Count());
+            glDrawArrays(primitiveType, 0, count);
         }
 
         template<typename T, typename S>

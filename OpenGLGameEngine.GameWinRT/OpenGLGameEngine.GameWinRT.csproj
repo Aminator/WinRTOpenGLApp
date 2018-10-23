@@ -99,6 +99,8 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
+    <Content Include="AwesomeFace.png" />
+    <Content Include="Container.jpg" />
     <Content Include="FragmentShader.glsl" />
     <None Include="OpenGLGameEngine.GameWinRT_TemporaryKey.pfx" />
     <Content Include="VertexShader.glsl" />

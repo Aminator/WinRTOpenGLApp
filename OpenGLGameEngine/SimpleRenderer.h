@@ -1,6 +1,7 @@
 #pragma once
 
 #include "pch.h"
+#include "Texture.h"
 #include "ShaderProgram.h"
 #include "VertexArray.h"
 #include "VertexBuffer.h"
@@ -11,6 +12,8 @@ namespace OpenGLGameEngine
     class SimpleRenderer
     {
     private:
+        std::unique_ptr<Texture> m_texture0{ nullptr };
+        std::unique_ptr<Texture> m_texture1{ nullptr };
         std::unique_ptr<ShaderProgram> m_program{ nullptr };
         std::unique_ptr<VertexArray<float, unsigned int>> m_vertexArray{ nullptr };
         std::unique_ptr<VertexBuffer<float>> m_vertexBuffer{ nullptr };
@@ -20,6 +23,10 @@ namespace OpenGLGameEngine
         int m_windowWidth{};
 
         float m_time{};
+
+        glm::vec3 m_cameraPos{ 0.0f, 0.0f, 3.0f };
+        glm::vec3 m_cameraFront{ 0.0f, 0.0f, -1.0f };
+        glm::vec3 m_cameraUp{ 0.0f, 1.0f, 0.0f };
 
     public:
         SimpleRenderer();

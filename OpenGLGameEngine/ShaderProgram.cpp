@@ -22,12 +22,12 @@ namespace OpenGLGameEngine
         return GetUniformLocation(name);
     }
 
-    concurrency::task<std::wstring> ShaderProgram::LoadShaderAsync(const std::wstring& path)
+    concurrency::task<std::wstring> ShaderProgram::LoadShaderAsync(std::wstring path)
     {
 #ifdef IS_UWP
         using namespace winrt;
-        using namespace winrt::Windows::Foundation;
-        using namespace winrt::Windows::Storage;
+        using namespace Windows::Foundation;
+        using namespace Windows::Storage;
 
         StorageFile file = co_await StorageFile::GetFileFromApplicationUriAsync(Uri(path));
         return std::wstring(co_await FileIO::ReadTextAsync(file));
@@ -75,10 +75,36 @@ namespace OpenGLGameEngine
         unsigned int vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
         unsigned int fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
 
+        int success;
+        char infoLog[512];
+        glGetShaderiv(vs, GL_COMPILE_STATUS, &success);
+
+        if (!success)
+        {
+            glGetShaderInfoLog(vs, 512, NULL, infoLog);
+            throw std::exception(infoLog);
+        }
+
+        glGetShaderiv(fs, GL_COMPILE_STATUS, &success);
+
+        if (!success)
+        {
+            glGetShaderInfoLog(fs, 512, NULL, infoLog);
+            throw std::exception(infoLog);
+        }
+
         glAttachShader(programId, vs);
         glAttachShader(programId, fs);
         glLinkProgram(programId);
         glValidateProgram(programId);
+
+        glGetProgramiv(programId, GL_LINK_STATUS, &success);
+
+        if (!success)
+        {
+            glGetProgramInfoLog(programId, 512, NULL, infoLog);
+            throw std::exception(infoLog);
+        }
 
         glDeleteShader(vs);
         glDeleteShader(fs);
