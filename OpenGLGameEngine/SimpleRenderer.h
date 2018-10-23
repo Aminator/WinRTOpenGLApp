@@ -12,8 +12,8 @@ namespace OpenGLGameEngine
     class SimpleRenderer
     {
     private:
-        std::unique_ptr<Texture> m_texture0{ nullptr };
-        std::unique_ptr<Texture> m_texture1{ nullptr };
+        std::shared_ptr<Texture> m_texture0{ nullptr };
+        std::shared_ptr<Texture> m_texture1{ nullptr };
         std::unique_ptr<ShaderProgram> m_program{ nullptr };
         std::unique_ptr<VertexArray<float, unsigned int>> m_vertexArray{ nullptr };
         std::unique_ptr<VertexBuffer<float>> m_vertexBuffer{ nullptr };
@@ -27,6 +27,14 @@ namespace OpenGLGameEngine
         glm::vec3 m_cameraPos{ 0.0f, 0.0f, 3.0f };
         glm::vec3 m_cameraFront{ 0.0f, 0.0f, -1.0f };
         glm::vec3 m_cameraUp{ 0.0f, 1.0f, 0.0f };
+
+        glm::vec2 m_previousPosition{};
+        bool m_isPositionLocked{};
+
+        float m_yaw{ -90.0f };
+        float m_pitch{};
+
+        float m_fov{ 45.0f };
 
     public:
         SimpleRenderer();

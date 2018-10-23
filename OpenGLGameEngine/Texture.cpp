@@ -14,10 +14,10 @@ namespace OpenGLGameEngine
 
     Texture::~Texture()
     {
-        //glDeleteTextures(1, &m_rendererId);
+        glDeleteTextures(1, &m_rendererId);
     }
 
-    concurrency::task<Texture> Texture::LoadAsync(std::wstring path)
+    concurrency::task<std::shared_ptr<Texture>> Texture::LoadAsync(std::wstring path)
     {
 #if IS_UWP
         using namespace winrt;
@@ -53,7 +53,7 @@ namespace OpenGLGameEngine
                 throw std::exception("This format is not supported.");
         }
 
-        Texture texture(data, decoder.PixelWidth(), decoder.PixelHeight(), pixelFormat);
+        auto texture = std::make_shared<Texture>(data, decoder.PixelWidth(), decoder.PixelHeight(), pixelFormat);
 
         delete[] data;
 

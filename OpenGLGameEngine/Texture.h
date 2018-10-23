@@ -13,11 +13,10 @@ namespace OpenGLGameEngine
         GLenum m_format{};
 
     public:
-        Texture() = default;
         Texture(const unsigned char* data, int width, int height, GLenum format);
         ~Texture() override;
 
-        static concurrency::task<Texture> LoadAsync(std::wstring path);
+        static concurrency::task<std::shared_ptr<Texture>> LoadAsync(std::wstring path);
 
         void Bind() const override;
         void Bind(GLenum textureUnit) const;
