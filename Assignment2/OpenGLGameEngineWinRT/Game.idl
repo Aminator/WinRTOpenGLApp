@@ -1,0 +1,13 @@
+namespace OpenGLGameEngineWinRT
+{
+    runtimeclass Game
+    {
+        Game();
+
+        void Initialize();
+        void Load();
+        void Uninitialize();
+        void Run();
+        void SetWindow();
+    }
+}
