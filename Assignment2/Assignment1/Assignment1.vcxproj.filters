@@ -42,6 +42,12 @@
     <None Include="Assets\VertexShader.glsl">
       <Filter>Assets</Filter>
     </None>
+    <None Include="Assets\LightVertexShader.glsl">
+      <Filter>Assets</Filter>
+    </None>
+    <None Include="Assets\LightFragmentShader.glsl">
+      <Filter>Assets</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Assets">

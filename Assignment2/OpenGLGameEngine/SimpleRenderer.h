@@ -15,6 +15,7 @@ namespace OpenGLGameEngine
         std::shared_ptr<Texture> m_texture0{ nullptr };
         std::shared_ptr<Texture> m_texture1{ nullptr };
         std::unique_ptr<ShaderProgram> m_program{ nullptr };
+        std::unique_ptr<ShaderProgram> m_lightProgram{ nullptr };
         std::unique_ptr<VertexArray<float, unsigned int>> m_vertexArray{ nullptr };
         std::unique_ptr<VertexBuffer<float>> m_vertexBuffer{ nullptr };
         std::unique_ptr<IndexBuffer<unsigned int>> m_indexBuffer{ nullptr };

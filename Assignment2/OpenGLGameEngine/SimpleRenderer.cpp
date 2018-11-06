@@ -167,6 +167,9 @@ namespace OpenGLGameEngine
         std::wstring vertexShaderSource = co_await ShaderProgram::LoadShaderAsync(L"ms-appx:///Assets/VertexShader.glsl");
         std::wstring fragmentShaderSource = co_await ShaderProgram::LoadShaderAsync(L"ms-appx:///Assets/FragmentShader.glsl");
 
+        std::wstring lampVertexShaderSource = co_await ShaderProgram::LoadShaderAsync(L"ms-appx:///Assets/LightVertexShader.glsl");
+        std::wstring lampFragmentShaderSource = co_await ShaderProgram::LoadShaderAsync(L"ms-appx:///Assets/LightFragmentShader.glsl");
+
         m_texture0 = co_await Texture::LoadAsync(L"ms-appx:///Assets/Container.jpg");
         m_texture0->Unbind();
 
@@ -174,6 +177,7 @@ namespace OpenGLGameEngine
         m_texture1->Unbind();
 
         m_program = std::make_unique<ShaderProgram>(vertexShaderSource, fragmentShaderSource);
+        m_lightProgram = std::make_unique<ShaderProgram>(lampVertexShaderSource, lampFragmentShaderSource);
 
         m_vertexBuffer = std::make_unique<VertexBuffer<float>>(vertices, sizeof(vertices) / sizeof(float));
         m_indexBuffer = std::make_unique<IndexBuffer<unsigned int>>(indices, sizeof(indices) / sizeof(unsigned int));
@@ -217,6 +221,13 @@ namespace OpenGLGameEngine
             (*m_program)[L"viewMatrix"].SetValue(viewMatrix);
             (*m_program)[L"projectionMatrix"].SetValue(projectionMatrix);
 
+            glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
+            glm::vec3 lightPosition(sin(m_time) * 2.0f, 0.0f, cos(m_time) * 2.0f);
+
+            (*m_program)[L"lightColor"].SetValue(lightColor);
+            (*m_program)[L"lightPos"].SetValue(lightPosition);
+            (*m_program)[L"viewPosition"].SetValue(m_cameraPos);
+
             glm::vec3 cubePositions[] =
             {
                 glm::vec3(0.0f,  0.0f,  0.0f),
@@ -243,6 +254,22 @@ namespace OpenGLGameEngine
 
                 Renderer::Draw(*m_vertexArray, *m_program, GL_TRIANGLES, 36);
             }
+
+            if (m_lightProgram != nullptr)
+            {
+                (*m_lightProgram)[L"viewMatrix"].SetValue(viewMatrix);
+                (*m_lightProgram)[L"projectionMatrix"].SetValue(projectionMatrix);
+
+                (*m_lightProgram)[L"lightColor"].SetValue(lightColor);
+
+                glm::mat4 lightWorldMatrix(1.0f);
+                lightWorldMatrix = glm::translate(lightWorldMatrix, lightPosition);
+                lightWorldMatrix = glm::scale(lightWorldMatrix, glm::vec3(0.2f));
+
+                (*m_lightProgram)[L"worldMatrix"].SetValue(lightWorldMatrix);
+
+                Renderer::Draw(*m_vertexArray, *m_lightProgram, GL_TRIANGLES, 36);
+            }
         }
     }
 
@@ -254,7 +281,7 @@ namespace OpenGLGameEngine
         using namespace winrt::Windows::System;
         using namespace winrt::Windows::UI::Core;
 
-        auto coreWindow = CoreWindow::GetForCurrentThread();
+        CoreWindow coreWindow = CoreWindow::GetForCurrentThread();
 
         float cameraSpeed = 2.5f * deltaTime;
 
