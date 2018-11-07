@@ -24,28 +24,12 @@ namespace OpenGLGameEngine
 
     concurrency::task<std::wstring> ShaderProgram::LoadShaderAsync(std::wstring path)
     {
-#ifdef IS_UWP
         using namespace winrt;
         using namespace Windows::Foundation;
         using namespace Windows::Storage;
 
         StorageFile file = co_await StorageFile::GetFileFromApplicationUriAsync(Uri(path));
         return std::wstring(co_await FileIO::ReadTextAsync(file));
-#else
-        std::ifstream stream(path);
-        std::streampos size = stream.tellg();
-        char* memblock = new char[size];
-
-        stream.seekg(0, std::ios::beg);
-        stream.read(memblock, size);
-        stream.close();
-
-        size_t i;
-        wchar_t* str = new wchar_t[size];
-        mbstowcs_s(&i, str, size, memblock, size);
-
-        return std::wstring(str);
-#endif
     }
 
     void ShaderProgram::Bind() const

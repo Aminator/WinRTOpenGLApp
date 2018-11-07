@@ -8,7 +8,6 @@ namespace OpenGLGameEngine
     {
         glEnable(GL_DEPTH_TEST);
 
-#if IS_UWP
         using namespace winrt::Windows::Foundation;
         using namespace winrt::Windows::System;
         using namespace winrt::Windows::UI::Core;
@@ -109,7 +108,6 @@ namespace OpenGLGameEngine
             if (m_fov <= 1.0f) m_fov = 1.0f;
             if (m_fov >= 45.0f) m_fov = 45.0f;
         });
-#endif
     }
 
     concurrency::task<void> SimpleRenderer::LoadContentAsync()
@@ -221,12 +219,23 @@ namespace OpenGLGameEngine
             (*m_program)[L"viewMatrix"].SetValue(viewMatrix);
             (*m_program)[L"projectionMatrix"].SetValue(projectionMatrix);
 
-            glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
             glm::vec3 lightPosition(sin(m_time) * 2.0f, 0.0f, cos(m_time) * 2.0f);
+            glm::vec3 lightColor(sin(m_time * 2.0f), sin(m_time * 0.7f), sin(m_time * 1.3f));
 
-            (*m_program)[L"lightColor"].SetValue(lightColor);
-            (*m_program)[L"lightPos"].SetValue(lightPosition);
+            glm::vec3 diffuseColor = lightColor * glm::vec3(0.5f);
+            glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f);
+
             (*m_program)[L"viewPosition"].SetValue(m_cameraPos);
+
+            (*m_program)[L"light.Position"].SetValue(lightPosition);
+            (*m_program)[L"light.Ambient"].SetValue(ambientColor);
+            (*m_program)[L"light.Diffuse"].SetValue(diffuseColor);
+            (*m_program)[L"light.Specular"].SetValue(glm::vec3(1.0f));
+
+            (*m_program)[L"material.Ambient"].SetValue(glm::vec3(1.0f, 0.5f, 0.31f));
+            (*m_program)[L"material.Diffuse"].SetValue(glm::vec3(1.0f, 0.5f, 0.31f));
+            (*m_program)[L"material.Specular"].SetValue(glm::vec3(0.5f));
+            (*m_program)[L"material.Shininess"].SetValue(32.0f);
 
             glm::vec3 cubePositions[] =
             {
@@ -260,7 +269,7 @@ namespace OpenGLGameEngine
                 (*m_lightProgram)[L"viewMatrix"].SetValue(viewMatrix);
                 (*m_lightProgram)[L"projectionMatrix"].SetValue(projectionMatrix);
 
-                (*m_lightProgram)[L"lightColor"].SetValue(lightColor);
+                (*m_lightProgram)[L"lightColor"].SetValue(diffuseColor);
 
                 glm::mat4 lightWorldMatrix(1.0f);
                 lightWorldMatrix = glm::translate(lightWorldMatrix, lightPosition);
@@ -277,7 +286,6 @@ namespace OpenGLGameEngine
     {
         m_time += deltaTime;
 
-#if IS_UWP
         using namespace winrt::Windows::System;
         using namespace winrt::Windows::UI::Core;
 
@@ -304,7 +312,6 @@ namespace OpenGLGameEngine
         {
             m_cameraPos += glm::normalize(glm::cross(m_cameraFront, m_cameraUp)) * cameraSpeed;
         }
-#endif
     }
 
     void SimpleRenderer::UpdateWindowSize(int width, int height)

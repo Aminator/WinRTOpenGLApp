@@ -1,24 +1,5 @@
 #pragma once
 
-#ifdef _MSC_VER
-#ifdef __has_include
-#if __has_include(<winapifamily.h>)
-#define HAVE_WINAPIFAMILY 1
-#endif
-#elif _MSC_VER >= 1700 && !_USING_V110_SDK71_
-#define HAVE_WINAPIFAMILY 1
-#endif
-#endif
-
-#ifdef HAVE_WINAPIFAMILY
-#include <winapifamily.h>
-#if !WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) && WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP)
-#define IS_UWP 1
-#endif
-#endif
-
-#if IS_UWP
-
 #define NOMINMAX
 
 #ifdef _WIN32
@@ -55,31 +36,6 @@
 #define glGenVertexArrays glGenVertexArraysOES
 #define glBindVertexArray glBindVertexArrayOES
 #define glDeleteVertexArrays glDeleteVertexArraysOES
-
-#else
-
-#ifdef _WIN32
-#define EXPORT __declspec(dllexport)
-#else
-#define EXPORT
-#endif // _WIN32
-
-#include <stdlib.h>
-#include <memory>
-#include <array>
-#include <vector>
-#include <iostream>
-#include <fstream>
-#include <exception>
-#include <typeinfo>
-#include <map>
-#include <chrono>
-#include <thread>
-
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-
-#endif // IS_UWP
 
 typedef std::chrono::high_resolution_clock Clock;
 typedef std::chrono::steady_clock::time_point TimePoint;

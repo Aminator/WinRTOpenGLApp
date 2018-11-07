@@ -19,7 +19,6 @@ namespace OpenGLGameEngine
 
     concurrency::task<std::shared_ptr<Texture>> Texture::LoadAsync(std::wstring path)
     {
-#if IS_UWP
         using namespace winrt;
         using namespace Windows::Foundation;
         using namespace Windows::Storage;
@@ -57,7 +56,6 @@ namespace OpenGLGameEngine
         auto texture = std::make_shared<Texture>(imageBuffer.data(), decoder.OrientedPixelWidth(), decoder.OrientedPixelHeight(), pixelFormat);
 
         return texture;
-#endif
     }
 
     void Texture::Bind() const
