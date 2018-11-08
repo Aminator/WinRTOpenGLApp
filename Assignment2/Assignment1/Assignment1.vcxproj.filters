@@ -29,6 +29,8 @@
     <Image Include="Assets\Container.jpg">
       <Filter>Assets</Filter>
     </Image>
+    <Image Include="Assets\Container2.png" />
+    <Image Include="Assets\Container2_Specular.png" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest" />

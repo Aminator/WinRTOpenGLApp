@@ -97,6 +97,8 @@
   <ItemGroup>
     <Image Include="Assets\AwesomeFace.png" />
     <Image Include="Assets\Container.jpg" />
+    <Image Include="Assets\Container2.png" />
+    <Image Include="Assets\Container2_Specular.png" />
     <Image Include="Assets\Logo.scale-100.png" />
     <Image Include="Assets\SmallLogo.scale-100.png" />
     <Image Include="Assets\StoreLogo.scale-100.png" />

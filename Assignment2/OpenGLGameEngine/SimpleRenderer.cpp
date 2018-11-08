@@ -168,10 +168,10 @@ namespace OpenGLGameEngine
         std::wstring lampVertexShaderSource = co_await ShaderProgram::LoadShaderAsync(L"ms-appx:///Assets/LightVertexShader.glsl");
         std::wstring lampFragmentShaderSource = co_await ShaderProgram::LoadShaderAsync(L"ms-appx:///Assets/LightFragmentShader.glsl");
 
-        m_texture0 = co_await Texture::LoadAsync(L"ms-appx:///Assets/Container.jpg");
+        m_texture0 = co_await Texture::LoadAsync(L"ms-appx:///Assets/Container2.png");
         m_texture0->Unbind();
 
-        m_texture1 = co_await Texture::LoadAsync(L"ms-appx:///Assets/AwesomeFace.png");
+        m_texture1 = co_await Texture::LoadAsync(L"ms-appx:///Assets/Container2_Specular.png");
         m_texture1->Unbind();
 
         m_program = std::make_unique<ShaderProgram>(vertexShaderSource, fragmentShaderSource);
@@ -190,9 +190,6 @@ namespace OpenGLGameEngine
         m_vertexArray->Unbind();
         m_vertexBuffer->Unbind();
         m_indexBuffer->Unbind();
-
-        (*m_program)[L"texture0"].SetValue(0);
-        (*m_program)[L"texture1"].SetValue(1);
     }
 
     void SimpleRenderer::Draw(float deltaTime)
@@ -219,23 +216,19 @@ namespace OpenGLGameEngine
             (*m_program)[L"viewMatrix"].SetValue(viewMatrix);
             (*m_program)[L"projectionMatrix"].SetValue(projectionMatrix);
 
-            glm::vec3 lightPosition(sin(m_time) * 2.0f, 0.0f, cos(m_time) * 2.0f);
-            glm::vec3 lightColor(sin(m_time * 2.0f), sin(m_time * 0.7f), sin(m_time * 1.3f));
-
-            glm::vec3 diffuseColor = lightColor * glm::vec3(0.5f);
-            glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f);
-
             (*m_program)[L"viewPosition"].SetValue(m_cameraPos);
 
-            (*m_program)[L"light.Position"].SetValue(lightPosition);
-            (*m_program)[L"light.Ambient"].SetValue(ambientColor);
-            (*m_program)[L"light.Diffuse"].SetValue(diffuseColor);
-            (*m_program)[L"light.Specular"].SetValue(glm::vec3(1.0f));
-
-            (*m_program)[L"material.Ambient"].SetValue(glm::vec3(1.0f, 0.5f, 0.31f));
-            (*m_program)[L"material.Diffuse"].SetValue(glm::vec3(1.0f, 0.5f, 0.31f));
-            (*m_program)[L"material.Specular"].SetValue(glm::vec3(0.5f));
+            (*m_program)[L"material.Diffuse"].SetValue(0);
+            (*m_program)[L"material.Specular"].SetValue(1);
             (*m_program)[L"material.Shininess"].SetValue(32.0f);
+
+            glm::vec3 pointLightPositions[] =
+            {
+                glm::vec3(0.7f,  0.2f,  2.0f),
+                glm::vec3(2.3f, -3.3f, -4.0f),
+                glm::vec3(-4.0f,  2.0f, -12.0f),
+                glm::vec3(0.0f,  0.0f, -3.0f)
+            };
 
             glm::vec3 cubePositions[] =
             {
@@ -250,6 +243,29 @@ namespace OpenGLGameEngine
                 glm::vec3(1.5f,  0.2f, -1.5f),
                 glm::vec3(-1.3f,  1.0f, -1.5f)
             };
+
+            //glm::vec3 lightColor(sin(m_time * 2.0f), sin(m_time * 0.7f), sin(m_time * 1.3f));
+            glm::vec3 lightColor(1.0f);
+
+            (*m_program)[L"directionalLight.Direction"].SetValue(glm::vec3(-0.2f, -1.0f, -0.3f));
+            (*m_program)[L"directionalLight.Ambient"].SetValue(lightColor * glm::vec3(0.1f));
+            (*m_program)[L"directionalLight.Diffuse"].SetValue(lightColor * glm::vec3(0.2f));
+            (*m_program)[L"directionalLight.Specular"].SetValue(glm::vec3(1.0f));
+
+            for (int i = 0; i < 4; i++)
+            {
+                std::wstringstream ss;
+                ss << L"pointLights[" << i << L"]";
+                std::wstring index = ss.str();
+
+                (*m_program)[index + L".Position"].SetValue(pointLightPositions[i]);
+                (*m_program)[index + L".Ambient"].SetValue(lightColor * glm::vec3(0.2f));
+                (*m_program)[index + L".Diffuse"].SetValue(lightColor);
+                (*m_program)[index + L".Specular"].SetValue(glm::vec3(1.0f));
+                (*m_program)[index + L".Constant"].SetValue(1.0f);
+                (*m_program)[index + L".Linear"].SetValue(0.35f);
+                (*m_program)[index + L".Quadratic"].SetValue(0.44f);
+            }
 
             for (int i = 0; i < 10; i++)
             {
@@ -266,18 +282,21 @@ namespace OpenGLGameEngine
 
             if (m_lightProgram != nullptr)
             {
-                (*m_lightProgram)[L"viewMatrix"].SetValue(viewMatrix);
-                (*m_lightProgram)[L"projectionMatrix"].SetValue(projectionMatrix);
+                for (int i = 0; i < 4; i++)
+                {
+                    (*m_lightProgram)[L"viewMatrix"].SetValue(viewMatrix);
+                    (*m_lightProgram)[L"projectionMatrix"].SetValue(projectionMatrix);
 
-                (*m_lightProgram)[L"lightColor"].SetValue(diffuseColor);
+                    (*m_lightProgram)[L"lightColor"].SetValue(lightColor);
 
-                glm::mat4 lightWorldMatrix(1.0f);
-                lightWorldMatrix = glm::translate(lightWorldMatrix, lightPosition);
-                lightWorldMatrix = glm::scale(lightWorldMatrix, glm::vec3(0.2f));
+                    glm::mat4 lightWorldMatrix(1.0f);
+                    lightWorldMatrix = glm::translate(lightWorldMatrix, pointLightPositions[i]);
+                    lightWorldMatrix = glm::scale(lightWorldMatrix, glm::vec3(0.2f));
 
-                (*m_lightProgram)[L"worldMatrix"].SetValue(lightWorldMatrix);
+                    (*m_lightProgram)[L"worldMatrix"].SetValue(lightWorldMatrix);
 
-                Renderer::Draw(*m_vertexArray, *m_lightProgram, GL_TRIANGLES, 36);
+                    Renderer::Draw(*m_vertexArray, *m_lightProgram, GL_TRIANGLES, 36);
+                }
             }
         }
     }

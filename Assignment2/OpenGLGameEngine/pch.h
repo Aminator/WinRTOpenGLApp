@@ -23,6 +23,7 @@
 
 #include <pplawait.h>
 #include <angle_windowsstore.h>
+#include <sstream>
 
 #define GL_GLEXT_PROTOTYPES
 
