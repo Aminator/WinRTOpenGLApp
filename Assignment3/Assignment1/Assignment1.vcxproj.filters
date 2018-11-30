@@ -52,6 +52,10 @@
     </None>
     <None Include="Assets\DepthVertexShader.glsl" />
     <None Include="Assets\DepthFragmentShader.glsl" />
+    <None Include="Assets\ShadowMapVertexShader.glsl" />
+    <None Include="Assets\ShadowMapFragmentShader.glsl" />
+    <None Include="Assets\FrustumFragmentShader.glsl" />
+    <None Include="Assets\FrustumVertexShader.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Assets">

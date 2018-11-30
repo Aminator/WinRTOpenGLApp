@@ -8,7 +8,7 @@ varying vec2 uv;
 
 void main()
 {
-	float z = texture2D( depthTexture, uv ).r;
+	float z = texture2D(depthTexture, uv).r;
 	float linearZ = (2.0 * zNear) / (zFar + zNear - z * (zFar - zNear));
 
 	if (true)

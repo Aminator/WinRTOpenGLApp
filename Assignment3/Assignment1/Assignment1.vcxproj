@@ -121,10 +121,22 @@
     <None Include="Assets\FragmentShader.glsl">
       <DeploymentContent>true</DeploymentContent>
     </None>
+    <None Include="Assets\FrustumFragmentShader.glsl">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="Assets\FrustumVertexShader.glsl">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
     <None Include="Assets\LightFragmentShader.glsl">
       <DeploymentContent>true</DeploymentContent>
     </None>
     <None Include="Assets\LightVertexShader.glsl">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="Assets\ShadowMapFragmentShader.glsl">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="Assets\ShadowMapVertexShader.glsl">
       <DeploymentContent>true</DeploymentContent>
     </None>
     <None Include="Assets\VertexShader.glsl">

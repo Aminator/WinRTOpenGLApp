@@ -6,6 +6,8 @@ namespace OpenGLGameEngine
 {
     SimpleRenderer::SimpleRenderer()
     {
+		glEnable(GL_CULL_FACE);
+
         using namespace winrt::Windows::Foundation;
         using namespace winrt::Windows::System;
         using namespace winrt::Windows::UI::Core;
@@ -113,11 +115,11 @@ namespace OpenGLGameEngine
         const float vertices[] =
         {
             -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,  0.0f, 0.0f, -1.0f,
-             0.5f, -0.5f, -0.5f,  1.0f, 0.0f,  0.0f, 0.0f, -1.0f,
              0.5f,  0.5f, -0.5f,  1.0f, 1.0f,  0.0f, 0.0f, -1.0f,
+			 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,  0.0f, 0.0f, -1.0f,
              0.5f,  0.5f, -0.5f,  1.0f, 1.0f,  0.0f, 0.0f, -1.0f,
-            -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,  0.0f, 0.0f, -1.0f,
             -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,  0.0f, 0.0f, -1.0f,
+			-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,  0.0f, 0.0f, -1.0f,
                                                
             -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,  0.0f, 0.0f, 1.0f,
              0.5f, -0.5f,  0.5f,  1.0f, 0.0f,  0.0f, 0.0f, 1.0f,
@@ -134,11 +136,11 @@ namespace OpenGLGameEngine
             -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,  -1.0f, 0.0f, 0.0f,
                                                
              0.5f,  0.5f,  0.5f,  1.0f, 0.0f,  1.0f, 0.0f, 0.0f,
-             0.5f,  0.5f, -0.5f,  1.0f, 1.0f,  1.0f, 0.0f, 0.0f,
              0.5f, -0.5f, -0.5f,  0.0f, 1.0f,  1.0f, 0.0f, 0.0f,
+			 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,  1.0f, 0.0f, 0.0f,
              0.5f, -0.5f, -0.5f,  0.0f, 1.0f,  1.0f, 0.0f, 0.0f,
-             0.5f, -0.5f,  0.5f,  0.0f, 0.0f,  1.0f, 0.0f, 0.0f,
              0.5f,  0.5f,  0.5f,  1.0f, 0.0f,  1.0f, 0.0f, 0.0f,
+			 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,  1.0f, 0.0f, 0.0f,
                                                
             -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,  0.0f, -1.0f, 0.0f,
              0.5f, -0.5f, -0.5f,  1.0f, 1.0f,  0.0f, -1.0f, 0.0f,
@@ -148,11 +150,54 @@ namespace OpenGLGameEngine
             -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,  0.0f, -1.0f, 0.0f,
                                                
             -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,  0.0f, 1.0f, 0.0f,
-             0.5f,  0.5f, -0.5f,  1.0f, 1.0f,  0.0f, 1.0f, 0.0f,
              0.5f,  0.5f,  0.5f,  1.0f, 0.0f,  0.0f, 1.0f, 0.0f,
+			 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,  0.0f, 1.0f, 0.0f,
              0.5f,  0.5f,  0.5f,  1.0f, 0.0f,  0.0f, 1.0f, 0.0f,
-            -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,  0.0f, 1.0f, 0.0f,
-            -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,  0.0f, 1.0f, 0.0f
+            -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,  0.0f, 1.0f, 0.0f,
+			-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,  0.0f, 1.0f, 0.0f,
+
+
+			-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,  0.0f, 0.0f, 1.0f,
+			 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,  0.0f, 0.0f, 1.0f,
+			 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,  0.0f, 0.0f, 1.0f,
+			 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,  0.0f, 0.0f, 1.0f,
+			-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,  0.0f, 0.0f, 1.0f,
+			-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,  0.0f, 0.0f, 1.0f,
+
+			-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,  0.0f, 0.0f, -1.0f,
+			 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,  0.0f, 0.0f, -1.0f,
+			 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,  0.0f, 0.0f, -1.0f,
+			 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,  0.0f, 0.0f, -1.0f,
+			-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,  0.0f, 0.0f, -1.0f,
+			-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,  0.0f, 0.0f, -1.0f,
+
+			-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,  1.0f, 0.0f, 0.0f,
+			-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,  1.0f, 0.0f, 0.0f,
+			-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,  1.0f, 0.0f, 0.0f,
+			-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,  1.0f, 0.0f, 0.0f,
+			-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,  1.0f, 0.0f, 0.0f,
+			-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,  1.0f, 0.0f, 0.0f,
+
+			 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,  -1.0f, 0.0f, 0.0f,
+			 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,  -1.0f, 0.0f, 0.0f,
+			 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,  -1.0f, 0.0f, 0.0f,
+			 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,  -1.0f, 0.0f, 0.0f,
+			 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,  -1.0f, 0.0f, 0.0f,
+			 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,  -1.0f, 0.0f, 0.0f,
+
+			-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,  0.0f, 1.0f, 0.0f,
+			 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,  0.0f, 1.0f, 0.0f,
+			 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,  0.0f, 1.0f, 0.0f,
+			 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,  0.0f, 1.0f, 0.0f,
+			-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,  0.0f, 1.0f, 0.0f,
+			-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,  0.0f, 1.0f, 0.0f,
+
+			-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,  0.0f, -1.0f, 0.0f,
+			 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,  0.0f, -1.0f, 0.0f,
+			 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,  0.0f, -1.0f, 0.0f,
+			 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,  0.0f, -1.0f, 0.0f,
+			-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,  0.0f, -1.0f, 0.0f,
+			-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,  0.0f, -1.0f, 0.0f
         };
 
         const unsigned int indices[] =
@@ -168,6 +213,18 @@ namespace OpenGLGameEngine
 			1.0, -1.0, 1.0, 0.0
 		};
 
+		const float frustumVertices[] =
+		{
+			-1.0, -1.0, -1.0,
+			-1.0, -1.0,  1.0,
+			 1.0, -1.0, -1.0,
+			 1.0, -1.0,  1.0,
+			-1.0,  1.0, -1.0,
+			-1.0,  1.0,  1.0,
+			 1.0,  1.0, -1.0,
+			 1.0,  1.0,  1.0,
+		};
+
         std::wstring vertexShaderSource = co_await ShaderProgram::LoadShaderAsync(L"ms-appx:///Assets/VertexShader.glsl");
         std::wstring fragmentShaderSource = co_await ShaderProgram::LoadShaderAsync(L"ms-appx:///Assets/FragmentShader.glsl");
 
@@ -176,6 +233,12 @@ namespace OpenGLGameEngine
 
 		std::wstring depthVertexShaderSource = co_await ShaderProgram::LoadShaderAsync(L"ms-appx:///Assets/DepthVertexShader.glsl");
 		std::wstring depthFragmentShaderSource = co_await ShaderProgram::LoadShaderAsync(L"ms-appx:///Assets/DepthFragmentShader.glsl");
+
+		std::wstring frustumVertexShaderSource = co_await ShaderProgram::LoadShaderAsync(L"ms-appx:///Assets/FrustumVertexShader.glsl");
+		std::wstring frustumFragmentShaderSource = co_await ShaderProgram::LoadShaderAsync(L"ms-appx:///Assets/FrustumFragmentShader.glsl");
+
+		std::wstring shadowMapVertexShaderSource = co_await ShaderProgram::LoadShaderAsync(L"ms-appx:///Assets/ShadowMapVertexShader.glsl");
+		std::wstring shadowMapFragmentShaderSource = co_await ShaderProgram::LoadShaderAsync(L"ms-appx:///Assets/ShadowMapFragmentShader.glsl");
 
         m_texture0 = co_await Texture::LoadAsync(L"ms-appx:///Assets/Container2.png");
         m_texture0->Unbind();
@@ -189,10 +252,13 @@ namespace OpenGLGameEngine
         m_program = std::make_unique<ShaderProgram>(vertexShaderSource, fragmentShaderSource);
         m_lightProgram = std::make_unique<ShaderProgram>(lampVertexShaderSource, lampFragmentShaderSource);
 		m_depthProgram = std::make_unique<ShaderProgram>(depthVertexShaderSource, depthFragmentShaderSource);
+		m_frustumProgram = std::make_unique<ShaderProgram>(frustumVertexShaderSource, frustumFragmentShaderSource);
+		m_shadowMapProgram = std::make_unique<ShaderProgram>(shadowMapVertexShaderSource, shadowMapFragmentShaderSource);
+
+		m_indexBuffer = std::make_unique<IndexBuffer<unsigned int>>(indices, sizeof(indices) / sizeof(unsigned int));
 
 		{
 			m_vertexBuffer = std::make_unique<VertexBuffer<float>>(vertices, sizeof(vertices) / sizeof(float));
-			m_indexBuffer = std::make_unique<IndexBuffer<unsigned int>>(indices, sizeof(indices) / sizeof(unsigned int));
 
 			VertexBufferLayout<float> layout;
 			layout.Add(3);
@@ -203,6 +269,19 @@ namespace OpenGLGameEngine
 
 			m_vertexArray->Unbind();
 			m_vertexBuffer->Unbind();
+			m_indexBuffer->Unbind();
+		}
+
+		{
+			m_frustumVertexBuffer = std::make_unique<VertexBuffer<float>>(frustumVertices, sizeof(frustumVertices) / sizeof(float));
+
+			VertexBufferLayout<float> layout;
+			layout.Add(3);
+
+			m_frustumVertexArray = std::make_unique<VertexArray<float, unsigned int>>(layout, *m_frustumVertexBuffer, *m_indexBuffer);
+
+			m_frustumVertexArray->Unbind();
+			m_frustumVertexBuffer->Unbind();
 			m_indexBuffer->Unbind();
 		}
 
@@ -272,11 +351,12 @@ namespace OpenGLGameEngine
             }
 
             glm::mat4 viewMatrix = glm::lookAt(m_cameraPos, m_cameraPos + m_cameraFront, m_cameraUp);
-
             glm::mat4 projectionMatrix = glm::perspective(glm::radians(m_fov), (float)m_windowWidth / m_windowHeight, 0.1f, 100.0f);
 
-            (*m_program)[L"viewMatrix"].SetValue(viewMatrix);
-            (*m_program)[L"projectionMatrix"].SetValue(projectionMatrix);
+			glm::vec3 lightPosition(0.0f, 3.0f, 3.0f);
+
+			glm::mat4 lightViewMatrix = glm::lookAt(lightPosition, lightPosition + glm::vec3(0.0f, -1.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+			glm::mat4 lightProjectionMatrix = glm::perspective(glm::radians(25.0f), 512.0f / 512.0f, 0.1f, 100.0f);
 
             (*m_program)[L"viewPosition"].SetValue(m_cameraPos);
 
@@ -308,10 +388,9 @@ namespace OpenGLGameEngine
 
             //glm::vec3 lightColor(sin(m_time * 2.0f), sin(m_time * 0.7f), sin(m_time * 1.3f));
             glm::vec3 lightColor(1.0f);
-            glm::vec3 lightPosition(0.0f, 3.0f, 3.0f);
 
             (*m_program)[L"spotlight.Position"].SetValue(lightPosition);
-            (*m_program)[L"spotlight.Direction"].SetValue(glm::vec3(0.0f, -3.0f, -3.0f));
+            (*m_program)[L"spotlight.Direction"].SetValue(glm::vec3(0.0f, -1.0f, -1.0f));
             (*m_program)[L"spotlight.Ambient"].SetValue(lightColor * glm::vec3(0.2f));
             (*m_program)[L"spotlight.Diffuse"].SetValue(lightColor);
             (*m_program)[L"spotlight.Cutoff"].SetValue(cos(glm::radians(12.5f)));
@@ -320,63 +399,87 @@ namespace OpenGLGameEngine
             (*m_program)[L"spotlight.Linear"].SetValue(0.35f);
             (*m_program)[L"spotlight.Quadratic"].SetValue(0.44f);
 
-            for (int i = 0; i < 10; i++)
-            {
-                glm::mat4 worldMatrix(1.0f);
-                worldMatrix = glm::translate(worldMatrix, cubePositions[i]);
+			for (int p = 0; p < 2; p++)
+			{
+				ShaderProgram* currentProgram;
 
-                float angle = 20.0f * i;
-                worldMatrix = glm::rotate(worldMatrix, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-
-                (*m_program)[L"worldMatrix"].SetValue(worldMatrix);
-
+				if (p == 0)
 				{
+					currentProgram = m_shadowMapProgram.get();
+
+					(*currentProgram)[L"viewMatrix"].SetValue(lightViewMatrix);
+					(*currentProgram)[L"projectionMatrix"].SetValue(lightProjectionMatrix);
+
 					Renderer::SetViewport(m_depthBuffer->Width(), m_depthBuffer->Height());
 					m_framebuffer->Bind();
+				}
+				else
+				{
+					currentProgram = m_program.get();
 
-					Renderer::Draw(*m_vertexArray, *m_program, GL_TRIANGLES, 36);
+					m_depthBuffer->Bind(GL_TEXTURE2);
+					(*currentProgram)[L"shadowMap"].SetValue(2);
+
+					(*currentProgram)[L"viewMatrix"].SetValue(viewMatrix);
+					(*currentProgram)[L"projectionMatrix"].SetValue(projectionMatrix);
+
+					(*currentProgram)[L"lightViewMatrix"].SetValue(lightViewMatrix);
+					(*currentProgram)[L"lightProjectionMatrix"].SetValue(lightProjectionMatrix);
+
+					Renderer::SetViewport(m_windowWidth, m_windowHeight);
+					m_framebuffer->Unbind();
 				}
 
+				for (int i = 0; i < 10; i++)
 				{
+					glm::mat4 worldMatrix(1.0f);
+					worldMatrix = glm::translate(worldMatrix, cubePositions[i]);
+
+					float angle = 20.0f * i;
+					worldMatrix = glm::rotate(worldMatrix, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+
+					(*currentProgram)[L"worldMatrix"].SetValue(worldMatrix);
+
+					Renderer::Draw(*m_vertexArray, *currentProgram, GL_TRIANGLES, 72);
+				}
+
+				glm::mat4 worldMatrix(1.0f);
+				worldMatrix = glm::scale(worldMatrix, glm::vec3(20.0f));
+				(*currentProgram)[L"worldMatrix"].SetValue(worldMatrix);
+
+				Renderer::Draw(*m_vertexArray, *currentProgram, GL_TRIANGLES, 72);
+			}
+
+			if (m_lightProgram != nullptr)
+			{
+				(*m_lightProgram)[L"lightColor"].SetValue(lightColor);
+
+				glm::mat4 lightWorldMatrix(1.0f);
+				lightWorldMatrix = glm::translate(lightWorldMatrix, lightPosition);
+				lightWorldMatrix = glm::scale(lightWorldMatrix, glm::vec3(0.2f));
+
+				(*m_lightProgram)[L"worldMatrix"].SetValue(lightWorldMatrix);
+
+				{
+					(*m_lightProgram)[L"viewMatrix"].SetValue(viewMatrix);
+					(*m_lightProgram)[L"projectionMatrix"].SetValue(projectionMatrix);
+
 					Renderer::SetViewport(m_windowWidth, m_windowHeight);
 					m_framebuffer->Unbind();
 
-					Renderer::Draw(*m_vertexArray, *m_program, GL_TRIANGLES, 36);
+					Renderer::Draw(*m_vertexArray, *m_lightProgram, GL_TRIANGLES, 72);
 				}
-            }
+			}
 
-            glm::mat4 worldMatrix(1.0f);
-            worldMatrix = glm::scale(worldMatrix, glm::vec3(20.0f));
-            (*m_program)[L"worldMatrix"].SetValue(worldMatrix);
+			if (m_frustumProgram != nullptr)
+			{
+				(*m_frustumProgram)[L"lightND2worldTf"].SetValue(glm::inverse(lightProjectionMatrix * lightViewMatrix));
+				(*m_frustumProgram)[L"world2cameraClipTf"].SetValue(projectionMatrix * viewMatrix);
+				(*m_frustumProgram)[L"frustumColor"].SetValue(glm::vec3(0.99f, 0.99f, 0.33f));
 
-            Renderer::Draw(*m_vertexArray, *m_program, GL_TRIANGLES, 36);
+				Renderer::Draw(*m_frustumVertexArray, *m_frustumProgram, GL_LINES, 8);
 
-            if (m_lightProgram != nullptr)
-            {
-                (*m_lightProgram)[L"viewMatrix"].SetValue(viewMatrix);
-                (*m_lightProgram)[L"projectionMatrix"].SetValue(projectionMatrix);
-
-                (*m_lightProgram)[L"lightColor"].SetValue(lightColor);
-
-                glm::mat4 lightWorldMatrix(1.0f);
-                lightWorldMatrix = glm::translate(lightWorldMatrix, lightPosition);
-                lightWorldMatrix = glm::scale(lightWorldMatrix, glm::vec3(0.2f));
-
-                (*m_lightProgram)[L"worldMatrix"].SetValue(lightWorldMatrix);
-
-				{
-					Renderer::SetViewport(m_depthBuffer->Width(), m_depthBuffer->Height());
-					m_framebuffer->Bind();
-
-					Renderer::Draw(*m_vertexArray, *m_lightProgram, GL_TRIANGLES, 36);
-				}
-
-				{
-					Renderer::SetViewport(m_windowWidth, m_windowHeight);
-					m_framebuffer->Unbind();
-
-					Renderer::Draw(*m_vertexArray, *m_lightProgram, GL_TRIANGLES, 36);
-				}
+				glLineWidth(1.0f);
 			}
 
             if (m_texture0 != nullptr)
@@ -393,13 +496,10 @@ namespace OpenGLGameEngine
 
 			glDisable(GL_DEPTH_TEST);
 
-			Renderer::SetViewport(m_depthBuffer->Width(), m_depthBuffer->Height());
+			Renderer::SetViewport(256, 256);
 
 			{
-				if (m_depthBuffer != nullptr)
-				{
-					m_depthBuffer->Bind(GL_TEXTURE0);
-				}
+				m_depthBuffer->Bind(GL_TEXTURE0);
 
 				(*m_depthProgram)[L"depthTexture"].SetValue(0);
 				(*m_depthProgram)[L"zNear"].SetValue(0.1f);
