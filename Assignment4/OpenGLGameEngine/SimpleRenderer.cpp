@@ -130,6 +130,24 @@ namespace OpenGLGameEngine
 				case VirtualKey::Right:
 					m_slopeScale += 0.0001;
 					break;
+				case VirtualKey::I:
+					m_filterRadius++;
+					break;
+				case VirtualKey::K:
+					m_filterRadius--;
+					break;
+				case VirtualKey::J:
+					if (m_samples > 0)
+					{
+						m_samples = (sqrt(m_samples) - 2) * (sqrt(m_samples) - 2);
+					}
+					break;
+				case VirtualKey::L:
+					if (m_samples < 64)
+					{
+						m_samples = (sqrt(m_samples) + 2) * (sqrt(m_samples) + 2);
+					}
+					break;
 			}
         });
 
