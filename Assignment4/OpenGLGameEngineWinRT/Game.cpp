@@ -126,17 +126,6 @@ namespace winrt::OpenGLGameEngineWinRT::implementation
         };
 
         EGLint numConfigs = 0;
-        EGLint majorVersion = 1;
-        EGLint minorVersion;
-
-        if (m_driver == OpenGLVersion::GLES_2_0)
-        {
-            minorVersion = 0;
-        }
-        else
-        {
-            minorVersion = 5;
-        }
 
         EGLDisplay display = EGL_NO_DISPLAY;
         EGLContext context = EGL_NO_CONTEXT;
@@ -195,7 +184,7 @@ namespace winrt::OpenGLGameEngineWinRT::implementation
             throw std::exception("Failed to get default EGL display");
         }
 
-        if (eglInitialize(display, &majorVersion, &minorVersion) == EGL_FALSE)
+        if (eglInitialize(display, nullptr, nullptr) == EGL_FALSE)
         {
             throw std::exception("Failed to initialize EGL");
         }

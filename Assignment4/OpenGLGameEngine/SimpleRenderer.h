@@ -64,6 +64,9 @@ namespace OpenGLGameEngine
 		float m_lightYaw{ -90.0f };
 		float m_lightPitch{ -45.0f };
 
+		float m_filterRadius{ 3.0f };
+		int m_samples{ 25 };
+
     public:
         SimpleRenderer();
 

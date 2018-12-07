@@ -458,6 +458,9 @@ namespace OpenGLGameEngine
 					m_lightTexture->Bind(GL_TEXTURE3);
 					(*currentProgram)[L"lightTexture"].SetValue(3);
 
+					(*currentProgram)[L"filterRadius"].SetValue(m_filterRadius);
+					(*currentProgram)[L"samples"].SetValue(m_samples);
+
 					(*currentProgram)[L"viewMatrix"].SetValue(viewMatrix);
 					(*currentProgram)[L"projectionMatrix"].SetValue(projectionMatrix);
 
