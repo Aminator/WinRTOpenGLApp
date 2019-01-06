@@ -75,6 +75,10 @@
     <None Include="Assets\DepthFragmentShader.glsl">
       <Filter>Assets</Filter>
     </None>
+    <None Include="Assets\GBufferVertexShader.glsl" />
+    <None Include="Assets\GBufferFragmentShader.glsl" />
+    <None Include="Assets\LightingVertexShader.glsl" />
+    <None Include="Assets\LightingFragmentShader.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Assets">

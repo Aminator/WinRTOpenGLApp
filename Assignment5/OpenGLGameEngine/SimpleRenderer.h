@@ -17,14 +17,19 @@ namespace OpenGLGameEngine
         std::shared_ptr<Texture> m_texture1{ nullptr };
         std::shared_ptr<Texture> m_depthBuffer{ nullptr };
 		std::shared_ptr<Texture> m_lightTexture{ nullptr };
+		std::shared_ptr<Texture> m_gNormal{ nullptr };
+		std::shared_ptr<Texture> m_gColorSpec{ nullptr };
 
         std::shared_ptr<Framebuffer> m_framebuffer{ nullptr };
+		std::shared_ptr<Framebuffer> m_gNormalBuffer{ nullptr };
+		std::shared_ptr<Framebuffer> m_gColorSpecBuffer{ nullptr };
 
         std::unique_ptr<ShaderProgram> m_program{ nullptr };
-        std::unique_ptr<ShaderProgram> m_lightProgram{ nullptr };
+        std::unique_ptr<ShaderProgram> m_lampProgram{ nullptr };
 		std::unique_ptr<ShaderProgram> m_depthProgram{ nullptr };
 		std::unique_ptr<ShaderProgram> m_frustumProgram{ nullptr };
 		std::unique_ptr<ShaderProgram> m_shadowMapProgram{ nullptr };
+		std::unique_ptr<ShaderProgram> m_lightingProgram{ nullptr };
 
         std::unique_ptr<VertexArray<float, unsigned int>> m_vertexArray{ nullptr };
 		std::unique_ptr<VertexArray<float, unsigned int>> m_quadVertexArray{ nullptr };

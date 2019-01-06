@@ -83,9 +83,9 @@ namespace OpenGLGameEngine
 
         glTexImage2D(GL_TEXTURE_2D, 0, m_internalFormat, m_width, m_height, 0, m_format, m_type, data);
 
-		if (m_type == GL_UNSIGNED_BYTE)
-		{
-			glGenerateMipmap(GL_TEXTURE_2D);
-		}
+		//if (m_type == GL_UNSIGNED_BYTE)
+		//{
+		//	glGenerateMipmap(GL_TEXTURE_2D);
+		//}
     }
 }

@@ -22,22 +22,21 @@ namespace OpenGLGameEngine
 
         void Bind() const override
         {
-            glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_rendererId);
+            glBindFramebuffer(GL_FRAMEBUFFER, m_rendererId);
         }
 
-        void BindDepthTexture(unsigned int textureId)
+        void BindDepthTexture(unsigned int textureId, GLenum attachment)
         {
-            glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, textureId, 0);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, GL_TEXTURE_2D, textureId, 0);
         }
 
-        void Draw()
+        void Draw(const std::vector<GLenum>& drawBuffers)
         {
             Bind();
 
-			std::vector<GLenum> drawBuffers = { GL_NONE };
             glDrawBuffers(1, drawBuffers.data());
 
-            GLenum status = glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER);
+            GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 
             if (status != GL_FRAMEBUFFER_COMPLETE)
             {
@@ -49,7 +48,7 @@ namespace OpenGLGameEngine
 
         void Unbind() const override
         {
-            glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
         }
     };
 }

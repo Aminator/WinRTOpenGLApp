@@ -128,7 +128,19 @@
     <None Include="Assets\FrustumVertexShader.glsl">
       <DeploymentContent>true</DeploymentContent>
     </None>
+    <None Include="Assets\GBufferFragmentShader.glsl">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="Assets\GBufferVertexShader.glsl">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
     <None Include="Assets\LightFragmentShader.glsl">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="Assets\LightingFragmentShader.glsl">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="Assets\LightingVertexShader.glsl">
       <DeploymentContent>true</DeploymentContent>
     </None>
     <None Include="Assets\LightVertexShader.glsl">

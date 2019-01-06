@@ -4,116 +4,116 @@
 
 namespace OpenGLGameEngine
 {
-    SimpleRenderer::SimpleRenderer()
-    {
+	SimpleRenderer::SimpleRenderer()
+	{
 		glEnable(GL_CULL_FACE);
 
-        using namespace winrt::Windows::Foundation;
-        using namespace winrt::Windows::System;
-        using namespace winrt::Windows::UI::Core;
-        using namespace winrt::Windows::Devices::Input;
+		using namespace winrt::Windows::Foundation;
+		using namespace winrt::Windows::System;
+		using namespace winrt::Windows::UI::Core;
+		using namespace winrt::Windows::Devices::Input;
 
-        CoreWindow coreWindow = CoreWindow::GetForCurrentThread();
+		CoreWindow coreWindow = CoreWindow::GetForCurrentThread();
 
-        coreWindow.PointerPressed([this](const CoreWindow& sender, const PointerEventArgs& args)
-        {
-            if (args.CurrentPoint().PointerDevice().PointerDeviceType() == PointerDeviceType::Mouse && !m_isPositionLocked)
-            {
-                Point lockedPosition = Point(
-                    sender.Bounds().X,
-                    sender.Bounds().Y);
-
-                lockedPosition.X += sender.Bounds().Width / 2;
-                lockedPosition.Y += sender.Bounds().Height / 2;
-
-                sender.PointerPosition(lockedPosition);
-                sender.PointerCursor(nullptr);
-
-                m_previousPosition = glm::vec2(lockedPosition.X, lockedPosition.Y);
-                m_isPositionLocked = true;
-            }
-            else
-            {
-                Point position = args.CurrentPoint().Position();
-
-                position.X += sender.Bounds().X;
-                position.Y += sender.Bounds().Y;
-
-                m_previousPosition = glm::vec2(position.X, position.Y);
-                m_isPositionLocked = false;
-                if (sender.PointerCursor() == nullptr) sender.PointerCursor(CoreCursor(CoreCursorType::Arrow, 0));
-            }
-        });
-
-        coreWindow.PointerMoved([this](const CoreWindow& sender, const PointerEventArgs& args)
-        {
-            if (args.CurrentPoint().PointerDevice().PointerDeviceType() == PointerDeviceType::Mouse)
-            {
-                if (!m_isPositionLocked) return;
-            }
-            else
-            {
-                if (!args.CurrentPoint().IsInContact()) return;
-
-                m_isPositionLocked = false;
-                if (sender.PointerCursor() == nullptr) sender.PointerCursor(CoreCursor(CoreCursorType::Arrow, 0));
-            }
-
-            Point position = args.CurrentPoint().Position();
-
-            position.X += sender.Bounds().X;
-            position.Y += sender.Bounds().Y;
-
-            float xOffset = position.X - m_previousPosition.x;
-            float yOffset = m_previousPosition.y - position.Y;
-
-            float sensitivity = 0.05f;
-            xOffset *= sensitivity;
-            yOffset *= sensitivity;
-
-			bool isShiftDown = sender.GetAsyncKeyState(VirtualKey::Shift) != CoreVirtualKeyStates::None;
-
-			float yaw = isShiftDown ? m_lightYaw : m_yaw;
-			float pitch = isShiftDown ? m_lightPitch : m_pitch;
-
-            yaw += xOffset;
-            pitch += yOffset;
-
-            if (pitch > 89.0f) pitch = 89.0f;
-            if (pitch < -89.0f) pitch = -89.0f;
-
-            glm::vec3 front;
-            front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-            front.y = sin(glm::radians(pitch));
-            front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-
-			if (isShiftDown)
+		coreWindow.PointerPressed([this](const CoreWindow& sender, const PointerEventArgs& args)
 			{
-				m_lightYaw = yaw;
-				m_lightPitch = pitch;
-				m_lightDirection = glm::normalize(front);
-			}
-			else
-			{
-				m_yaw = yaw;
-				m_pitch = pitch;
-				m_cameraFront = glm::normalize(front);
-			}
+				if (args.CurrentPoint().PointerDevice().PointerDeviceType() == PointerDeviceType::Mouse && !m_isPositionLocked)
+				{
+					Point lockedPosition = Point(
+						sender.Bounds().X,
+						sender.Bounds().Y);
 
-            if (m_isPositionLocked)
-            {
-                sender.PointerPosition(Point(m_previousPosition.x, m_previousPosition.y));
-            }
-            else
-            {
-                m_previousPosition = glm::vec2(position.X, position.Y);
-            }
-        });
+					lockedPosition.X += sender.Bounds().Width / 2;
+					lockedPosition.Y += sender.Bounds().Height / 2;
 
-        coreWindow.KeyDown([this](const CoreWindow& sender, const KeyEventArgs& args)
-        {
-			switch (args.VirtualKey())
+					sender.PointerPosition(lockedPosition);
+					sender.PointerCursor(nullptr);
+
+					m_previousPosition = glm::vec2(lockedPosition.X, lockedPosition.Y);
+					m_isPositionLocked = true;
+				}
+				else
+				{
+					Point position = args.CurrentPoint().Position();
+
+					position.X += sender.Bounds().X;
+					position.Y += sender.Bounds().Y;
+
+					m_previousPosition = glm::vec2(position.X, position.Y);
+					m_isPositionLocked = false;
+					if (sender.PointerCursor() == nullptr) sender.PointerCursor(CoreCursor(CoreCursorType::Arrow, 0));
+				}
+			});
+
+		coreWindow.PointerMoved([this](const CoreWindow& sender, const PointerEventArgs& args)
 			{
+				if (args.CurrentPoint().PointerDevice().PointerDeviceType() == PointerDeviceType::Mouse)
+				{
+					if (!m_isPositionLocked) return;
+				}
+				else
+				{
+					if (!args.CurrentPoint().IsInContact()) return;
+
+					m_isPositionLocked = false;
+					if (sender.PointerCursor() == nullptr) sender.PointerCursor(CoreCursor(CoreCursorType::Arrow, 0));
+				}
+
+				Point position = args.CurrentPoint().Position();
+
+				position.X += sender.Bounds().X;
+				position.Y += sender.Bounds().Y;
+
+				float xOffset = position.X - m_previousPosition.x;
+				float yOffset = m_previousPosition.y - position.Y;
+
+				float sensitivity = 0.05f;
+				xOffset *= sensitivity;
+				yOffset *= sensitivity;
+
+				bool isShiftDown = sender.GetAsyncKeyState(VirtualKey::Shift) != CoreVirtualKeyStates::None;
+
+				float yaw = isShiftDown ? m_lightYaw : m_yaw;
+				float pitch = isShiftDown ? m_lightPitch : m_pitch;
+
+				yaw += xOffset;
+				pitch += yOffset;
+
+				if (pitch > 89.0f) pitch = 89.0f;
+				if (pitch < -89.0f) pitch = -89.0f;
+
+				glm::vec3 front;
+				front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+				front.y = sin(glm::radians(pitch));
+				front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+
+				if (isShiftDown)
+				{
+					m_lightYaw = yaw;
+					m_lightPitch = pitch;
+					m_lightDirection = glm::normalize(front);
+				}
+				else
+				{
+					m_yaw = yaw;
+					m_pitch = pitch;
+					m_cameraFront = glm::normalize(front);
+				}
+
+				if (m_isPositionLocked)
+				{
+					sender.PointerPosition(Point(m_previousPosition.x, m_previousPosition.y));
+				}
+				else
+				{
+					m_previousPosition = glm::vec2(position.X, position.Y);
+				}
+			});
+
+		coreWindow.KeyDown([this](const CoreWindow& sender, const KeyEventArgs& args)
+			{
+				switch (args.VirtualKey())
+				{
 				case VirtualKey::Escape:
 					m_isPositionLocked = false;
 					if (sender.PointerCursor() == nullptr) sender.PointerCursor(CoreCursor(CoreCursorType::Arrow, 0));
@@ -148,61 +148,61 @@ namespace OpenGLGameEngine
 						m_samples = (sqrt(m_samples) + 2) * (sqrt(m_samples) + 2);
 					}
 					break;
-			}
-        });
+				}
+			});
 
-        coreWindow.PointerWheelChanged([this](const CoreWindow& sender, const PointerEventArgs& args)
-        {
-            if (m_fov >= 1.0f && m_fov <= 45.0f) m_fov -= args.CurrentPoint().Properties().MouseWheelDelta() * 0.1f;
-            if (m_fov <= 1.0f) m_fov = 1.0f;
-            if (m_fov >= 45.0f) m_fov = 45.0f;
-        });
-    }
+		coreWindow.PointerWheelChanged([this](const CoreWindow& sender, const PointerEventArgs& args)
+			{
+				if (m_fov >= 1.0f && m_fov <= 45.0f) m_fov -= args.CurrentPoint().Properties().MouseWheelDelta() * 0.1f;
+				if (m_fov <= 1.0f) m_fov = 1.0f;
+				if (m_fov >= 45.0f) m_fov = 45.0f;
+			});
+	}
 
-    concurrency::task<void> SimpleRenderer::LoadContentAsync()
-    {
-        const float vertices[] =
-        {
-            -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,  0.0f, 0.0f, -1.0f,
-             0.5f,  0.5f, -0.5f,  1.0f, 1.0f,  0.0f, 0.0f, -1.0f,
+	concurrency::task<void> SimpleRenderer::LoadContentAsync()
+	{
+		const float vertices[] =
+		{
+			-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,  0.0f, 0.0f, -1.0f,
+			 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,  0.0f, 0.0f, -1.0f,
 			 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,  0.0f, 0.0f, -1.0f,
-             0.5f,  0.5f, -0.5f,  1.0f, 1.0f,  0.0f, 0.0f, -1.0f,
-            -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,  0.0f, 0.0f, -1.0f,
+			 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,  0.0f, 0.0f, -1.0f,
+			-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,  0.0f, 0.0f, -1.0f,
 			-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,  0.0f, 0.0f, -1.0f,
-                                               
-            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,  0.0f, 0.0f, 1.0f,
-             0.5f, -0.5f,  0.5f,  1.0f, 0.0f,  0.0f, 0.0f, 1.0f,
-             0.5f,  0.5f,  0.5f,  1.0f, 1.0f,  0.0f, 0.0f, 1.0f,
-             0.5f,  0.5f,  0.5f,  1.0f, 1.0f,  0.0f, 0.0f, 1.0f,
-            -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,  0.0f, 0.0f, 1.0f,
-            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,  0.0f, 0.0f, 1.0f,
-                                               
-            -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,  -1.0f, 0.0f, 0.0f,
-            -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,  -1.0f, 0.0f, 0.0f,
-            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,  -1.0f, 0.0f, 0.0f,
-            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,  -1.0f, 0.0f, 0.0f,
-            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,  -1.0f, 0.0f, 0.0f,
-            -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,  -1.0f, 0.0f, 0.0f,
-                                               
-             0.5f,  0.5f,  0.5f,  1.0f, 0.0f,  1.0f, 0.0f, 0.0f,
-             0.5f, -0.5f, -0.5f,  0.0f, 1.0f,  1.0f, 0.0f, 0.0f,
+
+			-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,  0.0f, 0.0f, 1.0f,
+			 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,  0.0f, 0.0f, 1.0f,
+			 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,  0.0f, 0.0f, 1.0f,
+			 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,  0.0f, 0.0f, 1.0f,
+			-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,  0.0f, 0.0f, 1.0f,
+			-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,  0.0f, 0.0f, 1.0f,
+
+			-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,  -1.0f, 0.0f, 0.0f,
+			-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,  -1.0f, 0.0f, 0.0f,
+			-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,  -1.0f, 0.0f, 0.0f,
+			-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,  -1.0f, 0.0f, 0.0f,
+			-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,  -1.0f, 0.0f, 0.0f,
+			-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,  -1.0f, 0.0f, 0.0f,
+
+			 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,  1.0f, 0.0f, 0.0f,
+			 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,  1.0f, 0.0f, 0.0f,
 			 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,  1.0f, 0.0f, 0.0f,
-             0.5f, -0.5f, -0.5f,  0.0f, 1.0f,  1.0f, 0.0f, 0.0f,
-             0.5f,  0.5f,  0.5f,  1.0f, 0.0f,  1.0f, 0.0f, 0.0f,
+			 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,  1.0f, 0.0f, 0.0f,
+			 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,  1.0f, 0.0f, 0.0f,
 			 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,  1.0f, 0.0f, 0.0f,
-                                               
-            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,  0.0f, -1.0f, 0.0f,
-             0.5f, -0.5f, -0.5f,  1.0f, 1.0f,  0.0f, -1.0f, 0.0f,
-             0.5f, -0.5f,  0.5f,  1.0f, 0.0f,  0.0f, -1.0f, 0.0f,
-             0.5f, -0.5f,  0.5f,  1.0f, 0.0f,  0.0f, -1.0f, 0.0f,
-            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,  0.0f, -1.0f, 0.0f,
-            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,  0.0f, -1.0f, 0.0f,
-                                               
-            -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,  0.0f, 1.0f, 0.0f,
-             0.5f,  0.5f,  0.5f,  1.0f, 0.0f,  0.0f, 1.0f, 0.0f,
+
+			-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,  0.0f, -1.0f, 0.0f,
+			 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,  0.0f, -1.0f, 0.0f,
+			 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,  0.0f, -1.0f, 0.0f,
+			 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,  0.0f, -1.0f, 0.0f,
+			-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,  0.0f, -1.0f, 0.0f,
+			-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,  0.0f, -1.0f, 0.0f,
+
+			-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,  0.0f, 1.0f, 0.0f,
+			 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,  0.0f, 1.0f, 0.0f,
 			 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,  0.0f, 1.0f, 0.0f,
-             0.5f,  0.5f,  0.5f,  1.0f, 0.0f,  0.0f, 1.0f, 0.0f,
-            -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,  0.0f, 1.0f, 0.0f,
+			 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,  0.0f, 1.0f, 0.0f,
+			-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,  0.0f, 1.0f, 0.0f,
 			-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,  0.0f, 1.0f, 0.0f,
 
 
@@ -247,12 +247,12 @@ namespace OpenGLGameEngine
 			 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,  0.0f, -1.0f, 0.0f,
 			-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,  0.0f, -1.0f, 0.0f,
 			-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,  0.0f, -1.0f, 0.0f
-        };
+		};
 
-        const unsigned int indices[] =
-        {
-            0, 1, 2
-        };
+		const unsigned int indices[] =
+		{
+			0, 1, 2
+		};
 
 		const float quadVertices[] =
 		{
@@ -274,11 +274,11 @@ namespace OpenGLGameEngine
 			 1.0,  1.0,  1.0,
 		};
 
-        std::wstring vertexShaderSource = co_await ShaderProgram::LoadShaderAsync(L"ms-appx:///Assets/VertexShader.glsl");
-        std::wstring fragmentShaderSource = co_await ShaderProgram::LoadShaderAsync(L"ms-appx:///Assets/FragmentShader.glsl");
+		std::wstring vertexShaderSource = co_await ShaderProgram::LoadShaderAsync(L"ms-appx:///Assets/VertexShader.glsl");
+		std::wstring fragmentShaderSource = co_await ShaderProgram::LoadShaderAsync(L"ms-appx:///Assets/FragmentShader.glsl");
 
-        std::wstring lampVertexShaderSource = co_await ShaderProgram::LoadShaderAsync(L"ms-appx:///Assets/LightVertexShader.glsl");
-        std::wstring lampFragmentShaderSource = co_await ShaderProgram::LoadShaderAsync(L"ms-appx:///Assets/LightFragmentShader.glsl");
+		std::wstring lampVertexShaderSource = co_await ShaderProgram::LoadShaderAsync(L"ms-appx:///Assets/LightVertexShader.glsl");
+		std::wstring lampFragmentShaderSource = co_await ShaderProgram::LoadShaderAsync(L"ms-appx:///Assets/LightFragmentShader.glsl");
 
 		std::wstring depthVertexShaderSource = co_await ShaderProgram::LoadShaderAsync(L"ms-appx:///Assets/DepthVertexShader.glsl");
 		std::wstring depthFragmentShaderSource = co_await ShaderProgram::LoadShaderAsync(L"ms-appx:///Assets/DepthFragmentShader.glsl");
@@ -289,23 +289,31 @@ namespace OpenGLGameEngine
 		std::wstring shadowMapVertexShaderSource = co_await ShaderProgram::LoadShaderAsync(L"ms-appx:///Assets/ShadowMapVertexShader.glsl");
 		std::wstring shadowMapFragmentShaderSource = co_await ShaderProgram::LoadShaderAsync(L"ms-appx:///Assets/ShadowMapFragmentShader.glsl");
 
-        m_texture0 = co_await Texture::LoadAsync(L"ms-appx:///Assets/Container2.png");
-        m_texture0->Unbind();
+		std::wstring gBufferVertexShaderSource = co_await ShaderProgram::LoadShaderAsync(L"ms-appx:///Assets/GBufferVertexShader.glsl");
+		std::wstring gBufferFragmentShaderSource = co_await ShaderProgram::LoadShaderAsync(L"ms-appx:///Assets/GBufferFragmentShader.glsl");
 
-        m_texture1 = co_await Texture::LoadAsync(L"ms-appx:///Assets/Container2_Specular.png");
-        m_texture1->Unbind();
+		std::wstring lightingVertexShaderSource = co_await ShaderProgram::LoadShaderAsync(L"ms-appx:///Assets/LightingVertexShader.glsl");
+		std::wstring lightingFragmentShaderSource = co_await ShaderProgram::LoadShaderAsync(L"ms-appx:///Assets/LightingFragmentShader.glsl");
+
+		m_texture0 = co_await Texture::LoadAsync(L"ms-appx:///Assets/Container2.png");
+		m_texture0->Unbind();
+
+		m_texture1 = co_await Texture::LoadAsync(L"ms-appx:///Assets/Container2_Specular.png");
+		m_texture1->Unbind();
 
 		m_lightTexture = co_await Texture::LoadAsync(L"ms-appx:///Assets/Spotlight_Texture.png");
 		m_lightTexture->Unbind();
 
-		m_depthBuffer = std::make_unique<Texture>(nullptr, 512, 512, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_UNSIGNED_INT);
+		m_depthBuffer = std::make_unique<Texture>(nullptr, m_windowWidth, m_windowHeight, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_UNSIGNED_INT);
 		m_depthBuffer->Unbind();
 
-        m_program = std::make_unique<ShaderProgram>(vertexShaderSource, fragmentShaderSource);
-        m_lightProgram = std::make_unique<ShaderProgram>(lampVertexShaderSource, lampFragmentShaderSource);
+		//m_program = std::make_unique<ShaderProgram>(vertexShaderSource, fragmentShaderSource);
+		m_program = std::make_unique<ShaderProgram>(gBufferVertexShaderSource, gBufferFragmentShaderSource);
+		m_lampProgram = std::make_unique<ShaderProgram>(lampVertexShaderSource, lampFragmentShaderSource);
 		m_depthProgram = std::make_unique<ShaderProgram>(depthVertexShaderSource, depthFragmentShaderSource);
 		m_frustumProgram = std::make_unique<ShaderProgram>(frustumVertexShaderSource, frustumFragmentShaderSource);
 		m_shadowMapProgram = std::make_unique<ShaderProgram>(shadowMapVertexShaderSource, shadowMapFragmentShaderSource);
+		m_lightingProgram = std::make_unique<ShaderProgram>(lightingVertexShaderSource, lightingFragmentShaderSource);
 
 		m_indexBuffer = std::make_unique<IndexBuffer<unsigned int>>(indices, sizeof(indices) / sizeof(unsigned int));
 
@@ -349,9 +357,10 @@ namespace OpenGLGameEngine
 			m_depthBuffer->Bind(GL_TEXTURE0);
 
 			m_framebuffer = std::make_unique<Framebuffer>();
-			m_framebuffer->BindDepthTexture(m_depthBuffer->RendererId());
+			m_framebuffer->BindDepthTexture(m_depthBuffer->RendererId(), GL_DEPTH_ATTACHMENT);
 
-			m_framebuffer->Draw();
+			std::vector<GLenum> drawBuffers = { GL_NONE };
+			m_framebuffer->Draw(drawBuffers);
 
 			m_framebuffer->Unbind();
 			m_depthBuffer->Unbind();
@@ -361,133 +370,128 @@ namespace OpenGLGameEngine
 			m_indexBuffer->Unbind();
 		}
 
-		auto result = glGetError();
-		m_frameBufferActive = true;
-    }
+		{
+			std::vector<GLenum> drawBuffers = { GL_COLOR_ATTACHMENT0 };
 
-    void SimpleRenderer::Draw(float deltaTime)
-    {
+			m_gNormal = std::make_unique<Texture>(nullptr, m_windowWidth, m_windowHeight, GL_RGB, GL_RGB, GL_FLOAT);
+			m_gNormalBuffer = std::make_unique<Framebuffer>();
+			m_gNormalBuffer->BindDepthTexture(m_gNormal->RendererId(), GL_COLOR_ATTACHMENT0);
+			m_gNormalBuffer->Draw(drawBuffers);
+
+			m_gNormalBuffer->Bind();
+			m_gNormalBuffer->BindDepthTexture(m_depthBuffer->RendererId(), GL_DEPTH_ATTACHMENT);
+			m_framebuffer->Draw({ GL_NONE });
+
+			m_gColorSpec = std::make_unique<Texture>(nullptr, m_windowWidth, m_windowHeight, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);
+			m_gColorSpecBuffer = std::make_unique<Framebuffer>();
+			m_gColorSpecBuffer->BindDepthTexture(m_gColorSpec->RendererId(), GL_COLOR_ATTACHMENT0);
+			m_gColorSpecBuffer->Draw(drawBuffers);
+
+			m_gColorSpecBuffer->Bind();
+			m_gColorSpecBuffer->BindDepthTexture(m_depthBuffer->RendererId(), GL_DEPTH_ATTACHMENT);
+			m_framebuffer->Draw({ GL_NONE });
+		}
+
+		auto result = glGetError();
+
+		m_frameBufferActive = true;
+	}
+
+	void SimpleRenderer::Draw(float deltaTime)
+	{
 		if (!m_frameBufferActive) return;
 
 		{
-			m_framebuffer->Bind();
-
-			Renderer::Clear();
-
-			glEnable(GL_DEPTH_TEST);
-			glDepthFunc(GL_LEQUAL);
-		}
-
-		{
 			m_framebuffer->Unbind();
 
-			Renderer::Clear();
 			Renderer::ClearColor(0.2f, 0.1f, 0.6f, 1.0f);
+			Renderer::Clear();
 
 			glEnable(GL_DEPTH_TEST);
-			glDepthFunc(GL_LEQUAL);
-
-			m_framebuffer->Unbind();
 		}
 
-        if (m_program != nullptr && m_vertexArray != nullptr)
-        {
-            if (m_texture0 != nullptr)
-            {
-                m_texture0->Bind(GL_TEXTURE0);
-            }
+		if (m_program != nullptr && m_vertexArray != nullptr)
+		{
+			if (m_texture0 != nullptr)
+			{
+				m_texture0->Bind(GL_TEXTURE0);
+			}
 
-            if (m_texture1 != nullptr)
-            {
-                m_texture1->Bind(GL_TEXTURE1);
-            }
+			if (m_texture1 != nullptr)
+			{
+				m_texture1->Bind(GL_TEXTURE1);
+			}
 
-            glm::mat4 viewMatrix = glm::lookAt(m_cameraPos, m_cameraPos + m_cameraFront, m_cameraUp);
-            glm::mat4 projectionMatrix = glm::perspective(glm::radians(m_fov), (float)m_windowWidth / m_windowHeight, 0.1f, 100.0f);
+			glm::mat4 viewMatrix = glm::lookAt(m_cameraPos, m_cameraPos + m_cameraFront, m_cameraUp);
+			glm::mat4 projectionMatrix = glm::perspective(glm::radians(m_fov), (float)m_windowWidth / m_windowHeight, 0.1f, 100.0f);
 
 			glm::mat4 lightViewMatrix = glm::lookAt(m_lightPosition, m_lightPosition + m_lightDirection, glm::vec3(0.0f, 1.0f, 0.0f));
 			glm::mat4 lightProjectionMatrix = glm::perspective(glm::radians(25.0f), 512.0f / 512.0f, 0.1f, 100.0f);
 
-            (*m_program)[L"viewPosition"].SetValue(m_cameraPos);
+			(*m_program)[L"material.Diffuse"].SetValue(0);
+			(*m_program)[L"material.Specular"].SetValue(1);
+			(*m_program)[L"material.Shininess"].SetValue(32.0f);
 
-            (*m_program)[L"material.Diffuse"].SetValue(0);
-            (*m_program)[L"material.Specular"].SetValue(1);
-            (*m_program)[L"material.Shininess"].SetValue(32.0f);
-
-            glm::vec3 pointLightPositions[] =
-            {
-                glm::vec3(0.7f,  0.2f,  2.0f),
-                glm::vec3(2.3f, -3.3f, -4.0f),
-                glm::vec3(-4.0f,  2.0f, -12.0f),
-                glm::vec3(0.0f,  0.0f, -3.0f)
-            };
-
-            glm::vec3 cubePositions[] =
-            {
-                glm::vec3(0.0f,  0.0f,  0.0f),
-                glm::vec3(2.0f,  5.0f, -15.0f),
-                glm::vec3(-1.5f, -2.2f, -2.5f),
-                glm::vec3(-3.8f, -2.0f, -12.3f),
-                glm::vec3(2.4f, -0.4f, -3.5f),
-                glm::vec3(-1.7f,  3.0f, -7.5f),
-                glm::vec3(1.3f, -2.0f, -2.5f),
-                glm::vec3(1.5f,  2.0f, -2.5f),
-                glm::vec3(1.5f,  0.2f, -1.5f),
-                glm::vec3(-1.3f,  1.0f, -1.5f)
-            };
-
-            //glm::vec3 lightColor(sin(m_time * 2.0f), sin(m_time * 0.7f), sin(m_time * 1.3f));
-            glm::vec3 lightColor(1.0f);
-
-            (*m_program)[L"spotlight.Position"].SetValue(m_lightPosition);
-            (*m_program)[L"spotlight.Direction"].SetValue(m_lightDirection);
-            (*m_program)[L"spotlight.Ambient"].SetValue(lightColor * glm::vec3(0.2f));
-            (*m_program)[L"spotlight.Diffuse"].SetValue(lightColor);
-            (*m_program)[L"spotlight.Cutoff"].SetValue(cos(glm::radians(12.5f)));
-            (*m_program)[L"spotlight.Specular"].SetValue(glm::vec3(1.0f));
-            (*m_program)[L"spotlight.Constant"].SetValue(1.0f);
-            (*m_program)[L"spotlight.Linear"].SetValue(0.35f);
-            (*m_program)[L"spotlight.Quadratic"].SetValue(0.44f);
-
-			(*m_program)[L"constantBias"].SetValue(m_constantBias);
-			(*m_program)[L"slopeScale"].SetValue(m_slopeScale);
-
-			for (int p = 0; p < 2; p++)
+			glm::vec3 lightPositions[] =
 			{
-				ShaderProgram* currentProgram;
+				glm::vec3(0.7f,  0.2f,  2.0f),
+				glm::vec3(2.3f, -3.3f, -4.0f),
+				glm::vec3(-4.0f,  2.0f, -12.0f),
+				glm::vec3(0.7f,  0.2f,  2.0f),
+			};
 
-				if (p == 0)
+			glm::vec3 cubePositions[] =
+			{
+				glm::vec3(0.0f,  0.0f,  0.0f),
+				glm::vec3(2.0f,  5.0f, -15.0f),
+				glm::vec3(-1.5f, -2.2f, -2.5f),
+				glm::vec3(-3.8f, -2.0f, -12.3f),
+				glm::vec3(2.4f, -0.4f, -3.5f),
+				glm::vec3(-1.7f,  3.0f, -7.5f),
+				glm::vec3(1.3f, -2.0f, -2.5f),
+				glm::vec3(1.5f,  2.0f, -2.5f),
+				glm::vec3(1.5f,  0.2f, -1.5f),
+				glm::vec3(-1.3f,  1.0f, -1.5f)
+			};
+
+			ShaderProgram* currentProgram = m_program.get();
+
+			(*currentProgram)[L"viewMatrix"].SetValue(viewMatrix);
+			(*currentProgram)[L"projectionMatrix"].SetValue(projectionMatrix);
+
+			Renderer::SetViewport(m_gNormal->Width(), m_gNormal->Height());
+
+			Framebuffer* currentFramebuffer = nullptr;
+
+			for (int j = 0; j < 4; j++)
+			{
+				switch (j)
 				{
-					currentProgram = m_shadowMapProgram.get();
+				case 0:
+					currentFramebuffer = m_framebuffer.get();
+					break;
+				case 1:
+					currentFramebuffer = m_gNormalBuffer.get();
+					break;
+				case 2:
+					currentFramebuffer = m_gColorSpecBuffer.get();
+					break;
+				}
 
-					(*currentProgram)[L"viewMatrix"].SetValue(lightViewMatrix);
-					(*currentProgram)[L"projectionMatrix"].SetValue(lightProjectionMatrix);
-
-					Renderer::SetViewport(m_depthBuffer->Width(), m_depthBuffer->Height());
-					m_framebuffer->Bind();
+				if (j == 3)
+				{
+					currentFramebuffer->Unbind();
 				}
 				else
 				{
-					currentProgram = m_program.get();
-
-					m_depthBuffer->Bind(GL_TEXTURE2);
-					(*currentProgram)[L"shadowMap"].SetValue(2);
-
-					m_lightTexture->Bind(GL_TEXTURE3);
-					(*currentProgram)[L"lightTexture"].SetValue(3);
-
-					(*currentProgram)[L"filterRadius"].SetValue(m_filterRadius);
-					(*currentProgram)[L"samples"].SetValue(m_samples);
-
-					(*currentProgram)[L"viewMatrix"].SetValue(viewMatrix);
-					(*currentProgram)[L"projectionMatrix"].SetValue(projectionMatrix);
-
-					(*currentProgram)[L"lightViewMatrix"].SetValue(lightViewMatrix);
-					(*currentProgram)[L"lightProjectionMatrix"].SetValue(lightProjectionMatrix);
-
-					Renderer::SetViewport(m_windowWidth, m_windowHeight);
-					m_framebuffer->Unbind();
+					currentFramebuffer->Bind();
 				}
+
+				glEnable(GL_DEPTH_TEST);
+
+				Renderer::Clear();
+
+				(*currentProgram)[L"bufferType"].SetValue(j);
 
 				for (int i = 0; i < 10; i++)
 				{
@@ -502,113 +506,118 @@ namespace OpenGLGameEngine
 					Renderer::Draw(*m_vertexArray, *currentProgram, GL_TRIANGLES, 72);
 				}
 
-				glm::mat4 worldMatrix(1.0f);
-				worldMatrix = glm::scale(worldMatrix, glm::vec3(20.0f));
-				(*currentProgram)[L"worldMatrix"].SetValue(worldMatrix);
-
-				Renderer::Draw(*m_vertexArray, *currentProgram, GL_TRIANGLES, 72);
+				auto result = glGetError();
 			}
 
-			if (m_lightProgram != nullptr)
-			{
-				(*m_lightProgram)[L"lightColor"].SetValue(lightColor);
+			currentFramebuffer->Unbind();
 
-				glm::mat4 lightWorldMatrix(1.0f);
-				lightWorldMatrix = glm::translate(lightWorldMatrix, m_lightPosition);
-				lightWorldMatrix = glm::scale(lightWorldMatrix, glm::vec3(0.2f));
+			glm::vec3 lightColor(1.0f);
 
-				(*m_lightProgram)[L"worldMatrix"].SetValue(lightWorldMatrix);
-
-				{
-					(*m_lightProgram)[L"viewMatrix"].SetValue(viewMatrix);
-					(*m_lightProgram)[L"projectionMatrix"].SetValue(projectionMatrix);
-
-					Renderer::SetViewport(m_windowWidth, m_windowHeight);
-					m_framebuffer->Unbind();
-
-					Renderer::Draw(*m_vertexArray, *m_lightProgram, GL_TRIANGLES, 72);
-				}
-			}
-
-			if (m_frustumProgram != nullptr)
-			{
-				(*m_frustumProgram)[L"lightND2worldTf"].SetValue(glm::inverse(lightProjectionMatrix * lightViewMatrix));
-				(*m_frustumProgram)[L"world2cameraClipTf"].SetValue(projectionMatrix * viewMatrix);
-				(*m_frustumProgram)[L"frustumColor"].SetValue(glm::vec3(0.99f, 0.99f, 0.33f));
-
-				Renderer::Draw(*m_frustumVertexArray, *m_frustumProgram, GL_LINES, 8);
-
-				glLineWidth(1.0f);
-			}
-
-            if (m_texture0 != nullptr)
-            {
-                m_texture0->Unbind();
-            }
-
-            if (m_texture1 != nullptr)
-            {
-                m_texture1->Unbind();
-            }
-
-			if (m_lightTexture != nullptr)
-			{
-				m_lightTexture->Unbind();
-			}
-
-			m_framebuffer->Unbind();
+			const int numLights = 4;
 
 			glDisable(GL_DEPTH_TEST);
 
-			Renderer::SetViewport(256, 256);
+			if (m_lightingProgram != nullptr)
+			{
+				(*m_lightingProgram)[L"viewPosition"].SetValue(m_cameraPos);
 
+				(*m_lightingProgram)[L"viewMatrixInv"].SetValue(glm::inverse(viewMatrix));
+				(*m_lightingProgram)[L"projectionMatrixInv"].SetValue(glm::inverse(projectionMatrix));
+
+				for (int i = 0; i < numLights; i++)
+				{
+					std::wstringstream ss;
+					ss << L"lights[" << i << L"]";
+					std::wstring index = ss.str();
+
+					(*m_lightingProgram)[index + L".Position"].SetValue(m_lightPosition);
+					(*m_lightingProgram)[index + L".Color"].SetValue(lightColor);
+				}
+
+				m_depthBuffer->Bind(GL_TEXTURE0);
+				m_gNormal->Bind(GL_TEXTURE1);
+				m_gColorSpec->Bind(GL_TEXTURE2);
+
+				(*m_lightingProgram)[L"gDepth"].SetValue(0);
+				(*m_lightingProgram)[L"gNormal"].SetValue(1);
+				(*m_lightingProgram)[L"gAlbedoSpec"].SetValue(2);
+
+				Renderer::Draw(*m_quadVertexArray, *m_lightingProgram, GL_TRIANGLE_STRIP, 4);
+			}
+
+			Renderer::SetViewport(512, 512);
+
+			if (m_depthProgram != nullptr)
 			{
 				m_depthBuffer->Bind(GL_TEXTURE0);
 
 				(*m_depthProgram)[L"depthTexture"].SetValue(0);
 				(*m_depthProgram)[L"zNear"].SetValue(0.1f);
-				(*m_depthProgram)[L"zFar"].SetValue(20.0f);
+				(*m_depthProgram)[L"zFar"].SetValue(100.0f);
 
 				Renderer::Draw(*m_quadVertexArray, *m_depthProgram, GL_TRIANGLE_STRIP, 4);
 			}
-        }
-    }
 
-    void SimpleRenderer::Update(float deltaTime)
-    {
-        m_time += deltaTime;
+			Renderer::SetViewport(m_windowWidth, m_windowHeight);
 
-        using namespace winrt::Windows::System;
-        using namespace winrt::Windows::UI::Core;
+			glEnable(GL_DEPTH_TEST);
 
-        CoreWindow coreWindow = CoreWindow::GetForCurrentThread();
+			if (m_lampProgram != nullptr)
+			{
+				for (int i = 0; i < numLights; i++)
+				{
+					(*m_lampProgram)[L"viewMatrix"].SetValue(viewMatrix);
+					(*m_lampProgram)[L"projectionMatrix"].SetValue(projectionMatrix);
 
-        float cameraSpeed = 2.5f * deltaTime;
+					(*m_lampProgram)[L"lightColor"].SetValue(lightColor);
+
+					glm::mat4 lightWorldMatrix(1.0f);
+					lightWorldMatrix = glm::translate(lightWorldMatrix, lightPositions[i]);
+					lightWorldMatrix = glm::scale(lightWorldMatrix, glm::vec3(0.2f));
+
+					(*m_lampProgram)[L"worldMatrix"].SetValue(lightWorldMatrix);
+
+					Renderer::Draw(*m_vertexArray, *m_lampProgram, GL_TRIANGLES, 36);
+				}
+			}
+		}
+	}
+
+	void SimpleRenderer::Update(float deltaTime)
+	{
+		m_time += deltaTime;
+
+		using namespace winrt::Windows::System;
+		using namespace winrt::Windows::UI::Core;
+
+		CoreWindow coreWindow = CoreWindow::GetForCurrentThread();
+
+		float cameraSpeed = 2.5f * deltaTime;
 
 		bool isShiftDown = coreWindow.GetAsyncKeyState(VirtualKey::Shift) != CoreVirtualKeyStates::None;
 
 		glm::vec3 position = isShiftDown ? m_lightPosition : m_cameraPos;
 		glm::vec3 direction = isShiftDown ? m_lightDirection : m_cameraFront;
 
-        if (coreWindow.GetAsyncKeyState(VirtualKey::W) != CoreVirtualKeyStates::None)
-        {
+		if (coreWindow.GetAsyncKeyState(VirtualKey::W) != CoreVirtualKeyStates::None)
+		{
 			position += cameraSpeed * direction;
-        }
+		}
 
-        if (coreWindow.GetAsyncKeyState(VirtualKey::S) != CoreVirtualKeyStates::None)
-        {
+		if (coreWindow.GetAsyncKeyState(VirtualKey::S) != CoreVirtualKeyStates::None)
+		{
 			position -= cameraSpeed * direction;
-        }
+		}
 
-        if (coreWindow.GetAsyncKeyState(VirtualKey::A) != CoreVirtualKeyStates::None)
-        {
+		if (coreWindow.GetAsyncKeyState(VirtualKey::A) != CoreVirtualKeyStates::None)
+		{
 			position -= glm::normalize(glm::cross(direction, m_cameraUp)) * cameraSpeed;
-        }
+		}
 
-        if (coreWindow.GetAsyncKeyState(VirtualKey::D) != CoreVirtualKeyStates::None)
-        {
+		if (coreWindow.GetAsyncKeyState(VirtualKey::D) != CoreVirtualKeyStates::None)
+		{
 			position += glm::normalize(glm::cross(direction, m_cameraUp)) * cameraSpeed;
-        }
+		}
 
 		if (isShiftDown)
 		{
@@ -618,12 +627,12 @@ namespace OpenGLGameEngine
 		{
 			m_cameraPos = position;
 		}
-    }
+	}
 
-    void SimpleRenderer::UpdateWindowSize(int width, int height)
-    {
-        Renderer::SetViewport(width, height);
-        m_windowWidth = width;
-        m_windowHeight = height;
-    }
+	void SimpleRenderer::UpdateWindowSize(int width, int height)
+	{
+		Renderer::SetViewport(width, height);
+		m_windowWidth = width;
+		m_windowHeight = height;
+	}
 }

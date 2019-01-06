@@ -17,6 +17,6 @@ void main()
 	}
 	else
 	{
-		gl_FragColor = vec4(vec3( z ), 1.0);
+		gl_FragColor = texture2D(depthTexture, uv);
 	}
 }
