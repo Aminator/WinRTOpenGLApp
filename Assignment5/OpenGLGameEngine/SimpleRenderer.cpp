@@ -766,6 +766,8 @@ namespace OpenGLGameEngine
 	{
 		if (!m_frameBufferActive) return;
 
+		glEnable(GL_BLEND);
+
 		{
 			m_framebuffer->Unbind();
 
@@ -876,7 +878,7 @@ namespace OpenGLGameEngine
 			currentFramebuffer->Unbind();
 			Renderer::Clear(GL_COLOR_BUFFER_BIT);
 
-			const int numLights = 6;
+			const int numLights = 32;
 
 			std::vector<glm::vec3> lightPositions;
 			std::vector<glm::vec3> lightColors;
@@ -901,12 +903,12 @@ namespace OpenGLGameEngine
 
 			glCullFace(GL_FRONT);
 			glDepthFunc(GL_GREATER);
+			glBlendFunc(GL_ONE, GL_ONE);
 
 			glDepthMask(false);
 
 			if (m_lightingProgram != nullptr)
 			{
-				(*m_lightingProgram)[L"numLights"].SetValue(numLights);
 				(*m_lightingProgram)[L"viewPosition"].SetValue(m_cameraPos);
 
 				(*m_lightingProgram)[L"viewMatrixInv"].SetValue(glm::inverse(viewMatrix));
@@ -916,20 +918,10 @@ namespace OpenGLGameEngine
 				float linear = 0.35f;
 				float quadratic = 0.44f;
 
-				for (int i = 0; i < numLights; i++)
-				{
-					std::wstringstream ss;
-					ss << L"lights[" << i << L"]";
-					std::wstring index = ss.str();
-
-					(*m_lightingProgram)[index + L".Position"].SetValue(lightPositions[i]);
-					(*m_lightingProgram)[index + L".Ambient"].SetValue(lightColors[i] * glm::vec3(0.1f));
-					(*m_lightingProgram)[index + L".Diffuse"].SetValue(lightColors[i]);
-					(*m_lightingProgram)[index + L".Specular"].SetValue(glm::vec3(1.0f));
-					(*m_lightingProgram)[index + L".Constant"].SetValue(constant);
-					(*m_lightingProgram)[index + L".Linear"].SetValue(linear);
-					(*m_lightingProgram)[index + L".Quadratic"].SetValue(quadratic);
-				}
+				(*m_lightingProgram)[L"light.Specular"].SetValue(glm::vec3(1.0f));
+				(*m_lightingProgram)[L"light.Constant"].SetValue(constant);
+				(*m_lightingProgram)[L"light.Linear"].SetValue(linear);
+				(*m_lightingProgram)[L"light.Quadratic"].SetValue(quadratic);
 
 				m_depthBuffer->Bind(GL_TEXTURE0);
 				m_gNormal->Bind(GL_TEXTURE1);
@@ -943,6 +935,10 @@ namespace OpenGLGameEngine
 
 				for (int i = 0; i < numLights; i++)
 				{
+					(*m_lightingProgram)[L"light.Position"].SetValue(lightPositions[i]);
+					(*m_lightingProgram)[L"light.Ambient"].SetValue(lightColors[i] * glm::vec3(0.1f));
+					(*m_lightingProgram)[L"light.Diffuse"].SetValue(lightColors[i]);
+
 					(*m_lightingProgram)[L"viewMatrix"].SetValue(viewMatrix);
 					(*m_lightingProgram)[L"projectionMatrix"].SetValue(projectionMatrix);
 
@@ -962,6 +958,7 @@ namespace OpenGLGameEngine
 
 			glCullFace(GL_BACK);
 			glDepthFunc(GL_LESS);
+			glBlendFunc(GL_ONE, GL_ZERO);
 
 			glDepthMask(true);
 

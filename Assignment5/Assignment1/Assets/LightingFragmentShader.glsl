@@ -17,8 +17,7 @@ struct PointLight
     float Quadratic;
 };
 
-uniform int numLights;
-uniform PointLight lights[32];
+uniform PointLight light;
 uniform vec3 viewPosition;
 
 uniform	mat4 viewMatrixInv;
@@ -77,13 +76,9 @@ void main()
     vec3 albedo = texture2D(gAlbedoSpec, uv).rgb;
     float specular = texture2D(gAlbedoSpec, uv).a;
 
-    vec3 lighting = vec3(0.0);
     vec3 viewDirection = normalize(viewPosition - fragPos);
 
-    for (int i = 0; i < numLights; i++)
-    {
-        lighting += CalculatePointLight(lights[i], normal, fragPos, viewDirection, albedo, vec3(specular));
-    }
+    vec3 lighting = CalculatePointLight(light, normal, fragPos, viewDirection, albedo, vec3(specular));
 
     gl_FragColor = vec4(lighting, 1.0);
 }
