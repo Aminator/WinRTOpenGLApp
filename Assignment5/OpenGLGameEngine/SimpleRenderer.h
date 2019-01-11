@@ -32,14 +32,17 @@ namespace OpenGLGameEngine
 		std::unique_ptr<ShaderProgram> m_lightingProgram{ nullptr };
 
         std::unique_ptr<VertexArray<float, unsigned int>> m_vertexArray{ nullptr };
+		std::unique_ptr<VertexArray<float, unsigned int>> m_sphereVertexArray{ nullptr };
 		std::unique_ptr<VertexArray<float, unsigned int>> m_quadVertexArray{ nullptr };
 		std::unique_ptr<VertexArray<float, unsigned int>> m_frustumVertexArray{ nullptr };
 
         std::unique_ptr<VertexBuffer<float>> m_vertexBuffer{ nullptr };
+		std::unique_ptr<VertexBuffer<float>> m_sphereVertexBuffer{ nullptr };
 		std::unique_ptr<VertexBuffer<float>> m_quadVertexBuffer{ nullptr };
 		std::unique_ptr<VertexBuffer<float>> m_frustumVertexBuffer{ nullptr };
 
         std::unique_ptr<IndexBuffer<unsigned int>> m_indexBuffer{ nullptr };
+		std::unique_ptr<IndexBuffer<unsigned int>> m_sphereIndexBuffer{ nullptr };
 
         int m_windowHeight{};
         int m_windowWidth{};

@@ -12,6 +12,7 @@ namespace OpenGLGameEngine
     {
     public:
         static void Clear();
+		static void Clear(GLbitfield mask);
         static void ClearColor(float r, float g, float b, float a);
 
         template<typename T, typename S>

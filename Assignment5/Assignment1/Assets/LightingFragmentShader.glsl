@@ -1,25 +1,32 @@
 precision mediump float;
 
-varying vec2 uv;
-
 uniform sampler2D gDepth;
 uniform sampler2D gNormal;
 uniform sampler2D gAlbedoSpec;
 
-struct Light
+struct PointLight
 {
-	vec3 Position;
-	vec3 Color;
+    vec3 Position;
+
+    vec3 Ambient;
+    vec3 Diffuse;
+    vec3 Specular;
+
+    float Constant;
+    float Linear;
+    float Quadratic;
 };
 
-const int NumLights = 4;
-uniform Light lights[NumLights];
+uniform int numLights;
+uniform PointLight lights[32];
 uniform vec3 viewPosition;
 
 uniform	mat4 viewMatrixInv;
 uniform	mat4 projectionMatrixInv;
 
-vec3 WorldPositionFromDepth(float depth)
+uniform vec2 viewPortSize;
+
+vec3 WorldPositionFromDepth(float depth, vec2 uv)
 {
     float z = depth * 2.0 - 1.0;
 
@@ -34,24 +41,49 @@ vec3 WorldPositionFromDepth(float depth)
     return worldSpacePosition.xyz;
 }
 
+vec3 CalculatePointLight(PointLight light, vec3 normal, vec3 fragmentPosition, vec3 viewDirection, vec3 albedo, vec3 specularColor)
+{
+    vec3 diffuseColor = albedo;
+
+    vec3 lightDirection = normalize(light.Position - fragmentPosition);
+    vec3 reflectDirection = reflect(-lightDirection, normal);
+
+    vec3 ambient = diffuseColor * light.Ambient;
+
+    float diff = max(dot(normal, lightDirection), 0.0);
+    vec3 diffuse = diffuseColor * diff * light.Diffuse;
+
+    float spec = pow(max(dot(viewDirection, reflectDirection), 0.0), 32.0);
+    vec3 specular = specularColor * spec * light.Specular;
+
+    float distance = length(light.Position - fragmentPosition);
+    float attenuation = 1.0 / (light.Constant + light.Linear * distance + light.Quadratic * distance * distance);
+
+    ambient *= attenuation;
+    diffuse *= attenuation;
+    specular *= attenuation;
+
+    return ambient + diffuse + specular;
+}
+
 void main()
 {
-	float depth = texture2D(gDepth, uv).r;
-	vec3 fragPos = WorldPositionFromDepth(depth);
+    vec2 uv = gl_FragCoord.xy / viewPortSize;
 
-	vec3 normal = texture2D(gNormal, uv).rgb;
-	vec3 albedo = texture2D(gAlbedoSpec, uv).rgb;
-	float specular = texture2D(gAlbedoSpec, uv).a;
+    float depth = texture2D(gDepth, uv).r;
+    vec3 fragPos = WorldPositionFromDepth(depth, uv);
 
-	vec3 lighting = albedo * 0.1;
-	vec3 viewDir = normalize(viewPosition - fragPos);
+    vec3 normal = texture2D(gNormal, uv).rgb;
+    vec3 albedo = texture2D(gAlbedoSpec, uv).rgb;
+    float specular = texture2D(gAlbedoSpec, uv).a;
 
-	for (int i = 0; i < NumLights; i++)
-	{
-		vec3 lightDirection = normalize(lights[i].Position - fragPos);
-		vec3 diffuse = max(dot(normal, lightDirection), 0.0) * albedo * lights[i].Color;
-		lighting += diffuse;
-	}
+    vec3 lighting = vec3(0.0);
+    vec3 viewDirection = normalize(viewPosition - fragPos);
 
-	gl_FragColor = vec4(lighting, 1.0);
+    for (int i = 0; i < numLights; i++)
+    {
+        lighting += CalculatePointLight(lights[i], normal, fragPos, viewDirection, albedo, vec3(specular));
+    }
+
+    gl_FragColor = vec4(lighting, 1.0);
 }

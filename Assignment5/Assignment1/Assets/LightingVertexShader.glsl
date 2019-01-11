@@ -1,10 +1,10 @@
-attribute vec2 vertexPos;
-attribute vec2 texCoord;
+attribute vec3 vertexPos;
 
-varying vec2 uv;
+uniform mat4 worldMatrix;
+uniform mat4 viewMatrix;
+uniform mat4 projectionMatrix;
 
 void main()
 {
-	uv = texCoord;
-    gl_Position = vec4(vertexPos, 0.0, 1.0);
+    gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4(vertexPos, 1.0);
 }

@@ -22,6 +22,7 @@ namespace OpenGLGameEngine
         void SetValue(float param) const;
         void SetValue(int param) const;
         void SetValue(const glm::mat4& param) const;
+		void SetValue(const glm::vec2& param) const;
         void SetValue(const glm::vec3& param) const;
     };
 }

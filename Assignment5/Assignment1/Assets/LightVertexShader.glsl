@@ -1,6 +1,6 @@
 attribute vec3 vertexPos;
-attribute vec2 texCoord;
-attribute vec3 normal;
+//attribute vec2 texCoord;
+//attribute vec3 normal;
 
 uniform mat4 worldMatrix;
 uniform mat4 viewMatrix;
